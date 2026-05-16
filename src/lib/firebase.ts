@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import firebaseConfig from "../../firebase-applet-config.json";
 
@@ -7,8 +7,10 @@ import firebaseConfig from "../../firebase-applet-config.json";
 const app = initializeApp(firebaseConfig);
 
 // Connect to the specific database ID specified in the configuration
-// This matches the database where rules were deployed
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || "(default)");
+// use initializeFirestore to configure long-polling and other settings for better reliability in some environments
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+}, firebaseConfig.firestoreDatabaseId || "(default)");
 
 // Export auth for login components
 export const auth = getAuth(app);
