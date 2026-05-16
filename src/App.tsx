@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
+import { ScrollToTop } from './components/ScrollToTop';
 import { Cart } from './components/Cart';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -18,6 +19,7 @@ export default function App() {
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <div className="min-h-screen bg-[#0A0A0A] text-white font-sans selection:bg-orange-500 selection:text-white">
             <Navbar onCartToggle={() => setIsCartOpen(true)} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
             <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
@@ -46,7 +48,6 @@ export default function App() {
               <div>
                 <h4 className="font-black uppercase text-[10px] tracking-[0.3em] text-neutral-400 mb-8 underline underline-offset-8 decoration-white/5">Archive</h4>
                 <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
-                  <li><Link to="/" className="hover:text-white transition-colors">Vintage</Link></li>
                   <li><Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link></li>
                   <li><Link to="/" className="hover:text-white transition-colors">Drops</Link></li>
                 </ul>
@@ -67,8 +68,6 @@ export default function App() {
                 © 2026 RETRO THREADS. ALL RIGHTS RESERVED.
               </p>
               <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
-                <span className="opacity-40">Authenticity Verified</span>
-                <span className="opacity-40">Eco-Friendly Shipping</span>
               </div>
             </div>
           </footer>

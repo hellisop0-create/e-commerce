@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, Menu, User, Search, Package, LogOut } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -14,11 +14,27 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSearchChange }) => {
   const { totalItems } = useCart();
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const isAdmin = user?.email === 'hellisop0@gmail.com';
+
+  const scrollToSection = (sectionId: string) => {
+    setIsMobileMenuOpen(false);
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
@@ -32,12 +48,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
           </Link>
           
           <div className="hidden lg:flex items-center gap-8 text-[10px] font-bold tracking-widest uppercase text-neutral-400">
-            <Link to="/" className="text-white border-b border-white/0 hover:border-white transition-all">Vintage</Link>
             {isAdmin && (
               <Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link>
             )}
-            <a href="/" className="hover:text-white transition-colors">Drops</a>
-            <a href="/" className="hover:text-white transition-colors">Our Story</a>
+            <button onClick={() => scrollToSection('drops')} className="hover:text-white transition-colors uppercase">Drops</button>
+            <button onClick={() => scrollToSection('story')} className="hover:text-white transition-colors uppercase">Our Story</button>
           </div>
         </div>
 
@@ -134,14 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
             </button>
           </div>
 
-          <div className="flex flex-col gap-8 pb-32">
-            <Link 
-              to="/" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
-            >
-              Vintage
-            </Link>
+          <div className="flex flex-col gap-8 pb-12">
             {isAdmin && (
               <Link 
                 to="/inventory" 
@@ -151,44 +159,53 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
                 Inventory
               </Link>
             )}
-            <a 
-              href="/" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
+            <button 
+              onClick={() => scrollToSection('drops')}
+              className="text-left text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
             >
               Drops
-            </a>
-            <a 
-              href="/" 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
+            </button>
+            <button 
+              onClick={() => scrollToSection('story')}
+              className="text-left text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
             >
               Our Story
-            </a>
-          </div>
+            </button>
 
-          <div className="absolute bottom-12 left-8 right-8 pt-8 border-t border-white/10">
-            {user ? (
-               <div className="flex items-center justify-between">
-                 <div className="flex items-center gap-3">
-                   <img 
-                     src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
-                     alt="Profile" 
-                     className="w-10 h-10 rounded-full border border-white/10"
-                   />
-                   <span className="text-xs font-black uppercase tracking-widest">{user.displayName || 'Collector'}</span>
+            <div className="mt-8 pt-8 border-t border-white/10">
+              {user ? (
+                 <div className="space-y-6">
+                   <div className="flex items-center gap-3">
+                     <img 
+                       src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
+                       alt="Profile" 
+                       className="w-12 h-12 rounded-full border border-white/10"
+                     />
+                     <div>
+                       <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.2em]">Logged in as</div>
+                       <div className="text-lg font-black uppercase tracking-tight">{user.displayName || 'Collector'}</div>
+                     </div>
+                   </div>
+                   <button 
+                     onClick={() => {
+                       signOut();
+                       setIsMobileMenuOpen(false);
+                     }} 
+                     className="flex items-center gap-2 text-xs font-black uppercase text-red-500 tracking-widest hover:translate-x-2 transition-transform"
+                   >
+                     <LogOut className="w-4 h-4" /> Sign Out from System
+                   </button>
                  </div>
-                 <button onClick={() => signOut()} className="text-[10px] font-black uppercase text-red-500">Logout</button>
-               </div>
-            ) : (
-              <Link 
-                to="/login" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-3 text-xs font-black uppercase tracking-widest"
-              >
-                <User className="w-5 h-5" /> Sign In
-              </Link>
-            )}
+              ) : (
+                <Link 
+                  to="/login" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3 text-2xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
+                >
+                  <User className="w-6 h-6" /> Sign In
+                </Link>
+              )}
+            </div>
           </div>
         </motion.div>
       )}

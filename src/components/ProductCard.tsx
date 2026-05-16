@@ -24,8 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       className="group relative bg-[#111111] border border-white/10 p-6 flex flex-col justify-between hover:bg-white transition-all duration-300 cursor-pointer"
     >
       <div>
-        <div className="flex justify-between items-start mb-8">
-          <span className="font-mono text-[10px] text-neutral-500 group-hover:text-neutral-400">SKU: {product.sku}</span>
+        <div className="flex justify-end items-start mb-8">
           <span className="font-black text-xl tracking-tighter group-hover:text-black transition-colors">${product.price.toFixed(2)}</span>
         </div>
 
