@@ -20,7 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  const isAdmin = user?.email === 'hellisop0@gmail.com';
+  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
 
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);

@@ -18,7 +18,7 @@ export const AdminPage = () => {
   const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms', 'Accessories'];
 
   // Simple admin check: only your email is allowed for now
-  const isAdmin = user?.email === 'hellisop0@gmail.com';
+  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
 
   useEffect(() => {
     if (!loading && !isAdmin) {

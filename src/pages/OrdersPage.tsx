@@ -12,7 +12,7 @@ const OrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isAdmin = user?.email === 'hellisop0@gmail.com';
+  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
 
   useEffect(() => {
     if (!loading && !isAdmin) {
