@@ -71,7 +71,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
                   type="text"
                   placeholder="SEARCH GEAR..."
                   value={searchQuery}
-                  onChange={(e) => onSearchChange(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    onSearchChange(value);
+                    if (value.trim()) {
+                      navigate(`/search?q=${encodeURIComponent(value)}`);
+                    } else if (location.pathname === '/search') {
+                      navigate('/');
+                    }
+                  }}
                   onBlur={() => !searchQuery && setIsSearchExpanded(false)}
                   className="bg-white/5 border border-white/10 rounded-full py-2 pl-12 pr-4 text-[10px] sm:text-xs font-bold tracking-widest uppercase focus:outline-none focus:border-orange-500 transition-all w-full placeholder:text-neutral-600"
                 />

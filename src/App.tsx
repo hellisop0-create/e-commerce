@@ -12,6 +12,7 @@ import { LoginPage } from './pages/LoginPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { AdminPage } from './pages/AdminPage';
 import OrdersPage from './pages/OrdersPage';
+import SearchPage from './pages/SearchPage';
 import ShippingReturns from './pages/ShippingReturns';
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
               <Route path="/inventory" element={<AdminPage />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/shipping-returns" element={<ShippingReturns />} />
+              <Route path="/search" element={<SearchPage />} />
             </Routes>
 
             <Footer />
