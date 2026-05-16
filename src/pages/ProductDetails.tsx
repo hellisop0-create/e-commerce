@@ -90,7 +90,7 @@ export const ProductDetailPage: React.FC = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="flex items-baseline gap-4 mb-4">
-               <h1 className="text-6xl md:text-8xl font-black uppercase leading-[0.8] tracking-tighter">
+               <h1 className="text-4xl sm:text-6xl md:text-8xl font-black uppercase leading-[0.8] tracking-tighter">
                 {product.name}
               </h1>
             </div>

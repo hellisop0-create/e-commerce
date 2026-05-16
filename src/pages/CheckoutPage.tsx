@@ -145,7 +145,7 @@ export const CheckoutPage = () => {
               <ArrowLeft className="w-4 h-4" />
               Abandon Order
             </Link>
-            <h1 className="text-6xl font-black tracking-tighter uppercase mb-4">Secure Checkout</h1>
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase mb-4">Secure Checkout</h1>
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest underline underline-offset-8 decoration-white/10">Finalize your sustainable style selection</p>
           </header>
 

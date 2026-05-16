@@ -39,7 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       <div className="group-hover:text-black transition-colors duration-300">
-        <h2 className="text-4xl font-black uppercase leading-[0.85] tracking-tighter mb-3 group-hover:text-black">
+        <h2 className="text-3xl sm:text-4xl font-black uppercase leading-[0.85] tracking-tighter mb-3 group-hover:text-black">
           {product.name}
         </h2>
         <p className="text-[11px] text-neutral-400 group-hover:text-neutral-600 leading-relaxed mb-6 line-clamp-2">

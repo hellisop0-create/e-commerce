@@ -132,7 +132,7 @@ export const AdminPage = () => {
               <ArrowLeft className="w-4 h-4" />
               Return to Catalog
             </Link>
-            <h1 className="text-6xl font-black tracking-tighter uppercase">Inventory</h1>
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase">Inventory</h1>
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest mt-2 underline underline-offset-8 decoration-white/10">Manage heritage archives and stock levels</p>
           </div>
           
