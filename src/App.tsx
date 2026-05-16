@@ -49,7 +49,7 @@ export default function App() {
                 <h4 className="font-black uppercase text-[10px] tracking-[0.3em] text-neutral-400 mb-8 underline underline-offset-8 decoration-white/5">Archive</h4>
                 <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
                   <li><Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link></li>
-                  <li><Link to="/" className="hover:text-white transition-colors">Drops</Link></li>
+                  <li><a href="#" className="hover:text-white transition-colors">Shipping & Returns</a></li>
                 </ul>
               </div>
 
