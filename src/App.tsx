@@ -10,6 +10,7 @@ import { ProductDetailPage } from './pages/ProductDetails';
 import { LoginPage } from './pages/LoginPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { AdminPage } from './pages/AdminPage';
+import ShippingReturns from './pages/ShippingReturns';
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/inventory" element={<AdminPage />} />
+              <Route path="/shipping-returns" element={<ShippingReturns />} />
             </Routes>
 
           <footer className="bg-[#0A0A0A] border-t border-white/10 pt-20 pb-10 px-8">
@@ -49,7 +51,7 @@ export default function App() {
                 <h4 className="font-black uppercase text-[10px] tracking-[0.3em] text-neutral-400 mb-8 underline underline-offset-8 decoration-white/5">Archive</h4>
                 <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
                   <li><Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Shipping & Returns</a></li>
+                  <li><Link to="/shipping-returns" className="hover:text-white transition-colors">Shipping & Returns</Link></li>
                 </ul>
               </div>
 
