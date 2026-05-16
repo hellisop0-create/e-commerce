@@ -5,11 +5,7 @@ import { Product } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, ArrowRight, Grid3X3, ListFilter, SlidersHorizontal } from 'lucide-react';
 
-interface CatalogProps {
-  searchQuery?: string;
-}
-
-export const Catalog: React.FC<CatalogProps> = ({ searchQuery = '' }) => {
+export const Catalog: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState('All');
@@ -33,14 +29,7 @@ export const Catalog: React.FC<CatalogProps> = ({ searchQuery = '' }) => {
   const categories = ['All', ...new Set(products.map(p => p.category))];
   
   const filteredProducts = products.filter(p => {
-    const matchesCategory = filter === 'All' || p.category === filter;
-    const searchLower = searchQuery.toLowerCase();
-    const matchesSearch = 
-      p.name.toLowerCase().includes(searchLower) || 
-      p.description.toLowerCase().includes(searchLower) ||
-      (p.sku && p.sku.toLowerCase().includes(searchLower));
-    
-    return matchesCategory && matchesSearch;
+    return filter === 'All' || p.category === filter;
   });
 
   return (

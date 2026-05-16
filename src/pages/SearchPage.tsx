@@ -73,12 +73,12 @@ const SearchPage: React.FC = () => {
         {isLoading ? (
           <div className="py-40 flex flex-col items-center justify-center gap-6">
             <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-500">Scanning Database...</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-500">Scanning Archive...</span>
           </div>
         ) : filteredProducts.length > 0 ? (
           <motion.div 
             layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"
           >
             <AnimatePresence mode='popLayout'>
               {filteredProducts.map(product => (

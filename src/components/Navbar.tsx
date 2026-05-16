@@ -36,6 +36,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
     }
   };
 
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    } else if (location.pathname === '/search') {
+      navigate('/');
+    }
+  };
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-md border-b border-white/10 px-4 md:px-8 py-4">
@@ -60,7 +69,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
         </div>
 
         <div className="flex items-center gap-2 sm:gap-6 flex-1 justify-end">
-          <div className={`relative flex items-center transition-all duration-300 ${isSearchExpanded ? 'flex-1 max-w-full lg:max-w-md' : 'w-10'}`}>
+          <form 
+            onSubmit={handleSearch}
+            className={`relative flex items-center transition-all duration-300 ${isSearchExpanded ? 'flex-1 max-w-full lg:max-w-md' : 'w-10'}`}
+          >
             <AnimatePresence>
               {isSearchExpanded && (
                 <motion.input
@@ -71,27 +83,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
                   type="text"
                   placeholder="SEARCH GEAR..."
                   value={searchQuery}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    onSearchChange(value);
-                    if (value.trim()) {
-                      navigate(`/search?q=${encodeURIComponent(value)}`);
-                    } else if (location.pathname === '/search') {
-                      navigate('/');
-                    }
-                  }}
+                  onChange={(e) => onSearchChange(e.target.value)}
                   onBlur={() => !searchQuery && setIsSearchExpanded(false)}
                   className="bg-white/5 border border-white/10 rounded-full py-2 pl-12 pr-4 text-[10px] sm:text-xs font-bold tracking-widest uppercase focus:outline-none focus:border-orange-500 transition-all w-full placeholder:text-neutral-600"
                 />
               )}
             </AnimatePresence>
             <button 
-              onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+              type="button"
+              onClick={() => {
+                if (isSearchExpanded && searchQuery) {
+                  handleSearch();
+                } else {
+                  setIsSearchExpanded(!isSearchExpanded);
+                }
+              }}
               className={`p-2 hover:bg-white/5 rounded-full transition-colors absolute left-0 ${isSearchExpanded ? 'text-orange-500' : 'text-neutral-400'}`}
             >
               <Search className="w-5 h-5" />
             </button>
-          </div>
+          </form>
           
           {user ? (
             <div className={`hidden lg:flex items-center gap-2 sm:gap-4 ${isSearchExpanded ? 'hidden sm:flex' : 'flex'}`}>

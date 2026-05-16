@@ -29,7 +29,7 @@ export default function App() {
             <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
             <Routes>
-              <Route path="/" element={<Catalog searchQuery={searchQuery} />} />
+              <Route path="/" element={<Catalog />} />
               <Route path="/product/:id" element={<ProductDetailPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
