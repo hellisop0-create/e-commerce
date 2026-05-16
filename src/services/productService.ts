@@ -123,5 +123,16 @@ export const orderService = {
       handleFirestoreError(error, OperationType.LIST, ORDERS_COLLECTION);
       return [];
     }
+  },
+
+  async getAllOrders(): Promise<Order[]> {
+    try {
+      const q = collection(db, ORDERS_COLLECTION);
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Order));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.LIST, ORDERS_COLLECTION);
+      return [];
+    }
   }
 };

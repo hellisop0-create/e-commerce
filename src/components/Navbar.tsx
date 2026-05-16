@@ -49,7 +49,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
           
           <div className="hidden lg:flex items-center gap-8 text-[10px] font-bold tracking-widest uppercase text-neutral-400">
             {isAdmin && (
-              <Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link>
+              <>
+                <Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link>
+                <Link to="/orders" className="hover:text-white transition-colors">Orders</Link>
+              </>
             )}
             <button onClick={() => scrollToSection('drops')} className="hover:text-white transition-colors uppercase">Drops</button>
             <button onClick={() => scrollToSection('story')} className="hover:text-white transition-colors uppercase">Our Story</button>
@@ -151,13 +154,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
 
           <div className="flex flex-col gap-8 pb-12">
             {isAdmin && (
-              <Link 
-                to="/inventory" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
-              >
-                Inventory
-              </Link>
+              <>
+                <Link 
+                  to="/inventory" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
+                >
+                  Inventory
+                </Link>
+                <Link 
+                  to="/orders" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-4xl font-black uppercase tracking-tighter hover:text-orange-500 transition-colors"
+                >
+                  Orders
+                </Link>
+              </>
             )}
             <button 
               onClick={() => scrollToSection('drops')}
