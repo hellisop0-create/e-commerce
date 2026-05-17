@@ -56,8 +56,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div className={`flex items-center gap-4 sm:gap-12 ${isSearchExpanded ? 'hidden sm:flex' : 'flex'}`}>
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <span className="font-black text-xl tracking-tighter uppercase whitespace-nowrap">
-              RETRO<span className="text-orange-500 group-hover:text-white transition-colors duration-300">THREADS</span>
+            <span className="font-black text-2xl tracking-[-0.1em] uppercase whitespace-nowrap">
+              KAAM<span className="text-orange-500 font-mono italic inline-block -rotate-12 translate-x-1">25</span>
             </span>
           </Link>
           
@@ -168,8 +168,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
           className="fixed inset-0 z-[60] bg-[#0A0A0A] p-8 lg:hidden overflow-y-auto"
         >
           <div className="flex justify-between items-center mb-12">
-            <span className="font-black text-xl tracking-tighter uppercase">
-              RETRO<span className="text-orange-500">THREADS</span>
+            <span className="font-black text-2xl tracking-[-0.1em] uppercase">
+              KAAM<span className="text-orange-500 font-mono italic inline-block -rotate-12 translate-x-1">25</span>
             </span>
             <button 
               onClick={() => setIsMobileMenuOpen(false)}

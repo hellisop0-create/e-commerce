@@ -10,8 +10,8 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
         <div className="col-span-2">
           <div className="flex items-center gap-2 mb-6 group">
-            <span className="font-black text-2xl tracking-tighter uppercase whitespace-nowrap">
-              RETRO<span className="text-orange-500 group-hover:text-white transition-colors duration-300">THREADS</span>
+            <span className="font-black text-3xl tracking-[-0.1em] uppercase whitespace-nowrap">
+              KAAM<span className="text-orange-500 font-mono italic inline-block -rotate-12 translate-x-1">25</span>
             </span>
           </div>
           <p className="text-neutral-500 text-lg font-medium leading-tight max-w-sm">
@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
       
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-10 border-t border-white/5 gap-6">
         <p className="text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
-          © 2026 RETRO THREADS. ALL RIGHTS RESERVED.
+          © 2026 KAAM25 SYSTEM. ALL RIGHTS RESERVED.
         </p>
         <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
         </div>

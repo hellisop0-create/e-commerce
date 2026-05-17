@@ -287,7 +287,7 @@ export const CheckoutPage = () => {
                       <p className="text-[9px] font-mono text-neutral-600 uppercase">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <span className="text-[11px] font-black">${(item.product.price * item.quantity).toFixed(2)}</span>
+                  <span className="text-[11px] font-black">Rs. {(item.product.price * item.quantity).toLocaleString()}</span>
                 </div>
               ))}
             </div>
@@ -295,11 +295,11 @@ export const CheckoutPage = () => {
             <div className="space-y-4 border-t border-white/5 pt-8">
               <div className="flex justify-between text-[10px] font-bold uppercase text-neutral-500 tracking-widest">
                 <span>Shipping Fee</span>
-                <span>$0.00</span>
+                <span>Rs. 0</span>
               </div>
               <div className="flex justify-between text-3xl font-black tracking-tighter border-t border-white/5 pt-4">
                 <span>TOTAL</span>
-                <span className="text-white">${totalPrice.toFixed(2)}</span>
+                <span className="text-white">Rs. {totalPrice.toLocaleString()}</span>
               </div>
             </div>
 

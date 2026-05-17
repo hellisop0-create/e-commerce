@@ -150,7 +150,7 @@ export const ProductDetailPage: React.FC = () => {
 
             <div className="flex justify-between items-center border-y border-white/10 py-8 mb-8">
               <span className="font-mono text-[10px] uppercase text-neutral-500">Price Points</span>
-              <span className="text-4xl font-black tracking-tighter">${product.price.toFixed(2)}</span>
+              <span className="text-4xl font-black tracking-tighter">Rs. {product.price.toLocaleString()}</span>
             </div>
 
             <p className="text-[12px] md:text-[14px] text-neutral-400 leading-relaxed mb-12 max-w-md">

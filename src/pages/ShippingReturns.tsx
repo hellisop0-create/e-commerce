@@ -26,9 +26,9 @@ const ShippingReturns: React.FC = () => {
                 All orders are processed within 2-3 business days. We ship worldwide using carbon-neutral logistics providers to ensure your vintage finds reach you sustainably.
               </p>
               <ul className="list-disc pl-5 space-y-2">
-                <li>Domestic (US): 3-5 business days - $8.00</li>
-                <li>International: 7-14 business days - $25.00</li>
-                <li>Free shipping on orders over $150</li>
+                <li>Domestic (Pakistan): 3-5 business days - Rs. 300</li>
+                <li>International: 7-14 business days - Rs. 5,000</li>
+                <li>Free shipping on orders over Rs. 15,000</li>
               </ul>
               <p className="text-[10px] uppercase font-bold tracking-widest text-neutral-600">
                 Note: Import duties and taxes for international shipments are the responsibility of the customer.

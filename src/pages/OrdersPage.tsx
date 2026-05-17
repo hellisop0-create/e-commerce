@@ -145,7 +145,7 @@ const OrdersPage: React.FC = () => {
                           <div className="bg-white/5 p-4 flex justify-between items-center">
                             <div className="space-y-1">
                                <div className="text-[9px] font-bold text-neutral-500 uppercase">{order.paymentMethod}</div>
-                               <div className="text-xl font-black tracking-tighter">${order.total.toFixed(2)}</div>
+                               <div className="text-xl font-black tracking-tighter">Rs. {order.total.toLocaleString()}</div>
                             </div>
                           </div>
                         </div>
@@ -163,7 +163,7 @@ const OrdersPage: React.FC = () => {
                             </div>
                             <div className="min-w-0">
                                <div className="text-[10px] font-black uppercase truncate group-hover/item:text-orange-500 transition-colors">{item.product.name}</div>
-                               <div className="text-[9px] font-bold text-neutral-500 mt-1 uppercase">QTY: {item.quantity} / ${item.product.price.toFixed(2)}</div>
+                               <div className="text-[9px] font-bold text-neutral-500 mt-1 uppercase">QTY: {item.quantity} / Rs. {item.product.price.toLocaleString()}</div>
                             </div>
                           </div>
                         ))}

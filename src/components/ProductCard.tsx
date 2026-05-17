@@ -25,7 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       <div>
         <div className="flex justify-end items-start mb-8">
-          <span className="font-black text-xl tracking-tighter group-hover:text-black transition-colors">${product.price.toFixed(2)}</span>
+          <span className="font-black text-xl tracking-tighter group-hover:text-black transition-colors">Rs. {product.price.toLocaleString()}</span>
         </div>
 
         <div className="aspect-square overflow-hidden bg-black/50 mb-6 grayscale group-hover:grayscale-0 transition-all duration-500">

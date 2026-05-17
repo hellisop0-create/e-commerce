@@ -23,7 +23,7 @@ export const AdminPage = () => {
     name: '',
     description: '',
     price: 0,
-    currency: 'USD',
+    currency: 'PKR',
     category: 'T-Shirts',
     images: [''],
     stock: 1,
@@ -91,7 +91,7 @@ export const AdminPage = () => {
       name: '',
       description: '',
       price: 0,
-      currency: 'USD',
+      currency: 'PKR',
       category: 'T-Shirts',
       images: [''],
       stock: 1,
@@ -399,7 +399,7 @@ export const AdminPage = () => {
                            </span>
                         </div>
                         <h3 className="text-xs font-black uppercase tracking-tight mb-4 group-hover:text-orange-500 transition-colors line-clamp-1">{product.name}</h3>
-                        <p className="text-[10px] font-black">${product.price.toFixed(2)}</p>
+                        <p className="text-[10px] font-black">Rs. {product.price.toLocaleString()}</p>
                       </div>
                       <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/5">
                         <span className="text-[9px] font-bold uppercase tracking-widest text-neutral-500">{product.category}</span>

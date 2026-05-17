@@ -185,7 +185,7 @@ export const Catalog: React.FC = () => {
               Not Just Gear.<br />It's History.
             </h2>
             <p className="text-neutral-400 text-base md:text-lg leading-relaxed mb-8 max-w-xl">
-              Retro Threads was born from a desire to preserve the craftsmanship of the past. We don't just sell clothes; we curate pieces of history that have stood the test of time. 
+              KAAM25 was born from a desire to preserve the craftsmanship of the past. We don't just sell clothes; we curate pieces of history that have stood the test of time. 
             </p>
             <div className="grid grid-cols-2 gap-8 border-t border-white/10 pt-8">
               <div>

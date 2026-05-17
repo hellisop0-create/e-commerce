@@ -84,7 +84,7 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start">
                         <h3 className="font-black text-sm uppercase tracking-tight truncate border-b border-white/10 pb-1">{item.product.name}</h3>
-                        <p className="font-black text-sm text-orange-500">${(item.product.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-black text-sm text-orange-500">Rs. {(item.product.price * item.quantity).toLocaleString()}</p>
                       </div>
                       <p className="font-mono text-[10px] text-neutral-500 mt-2 uppercase">Vintage / {item.product.category}</p>
                       
@@ -121,7 +121,7 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               <div className="flex justify-between items-end mb-8">
                 <div>
                   <span className="text-[10px] font-bold uppercase text-neutral-500 tracking-widest block mb-1">Subtotal</span>
-                  <p className="text-4xl font-black tracking-tighter">${totalPrice.toFixed(2)}</p>
+                  <p className="text-4xl font-black tracking-tighter">Rs. {totalPrice.toLocaleString()}</p>
                 </div>
               </div>
 
