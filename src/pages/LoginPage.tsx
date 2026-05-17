@@ -51,27 +51,27 @@ export const LoginPage = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-[#111111] border border-white/10 p-10"
+        className="w-full max-w-md bg-[#111111] border border-white/10 p-12 md:p-16"
       >
-        <div className="text-center mb-10">
+        <div className="text-center mb-12">
           <span className="text-[10px] font-bold tracking-[0.3em] text-orange-500 uppercase block mb-4 underline underline-offset-8 decoration-white/5">
             Security Layer
           </span>
-          <h1 className="text-5xl font-black tracking-tighter uppercase mb-4">
+          <h1 className="text-5xl font-black tracking-tighter uppercase mb-4 leading-none">
             {isSignUp ? 'CREATE ACCOUNT' : 'ACCESS CORE'}
           </h1>
-          <p className="text-neutral-500 text-xs font-medium uppercase tracking-widest">
+          <p className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest">
             {isSignUp ? 'Initialize your credentials' : 'Authorized Personnel Only'}
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-widest text-center">
+          <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-widest text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleEmailAuth} className="space-y-4 mb-8">
+        <form onSubmit={handleEmailAuth} className="space-y-4 mb-10">
           <input 
             type="email"
             required
@@ -91,13 +91,13 @@ export const LoginPage = () => {
           <button 
             type="submit"
             disabled={isLoading}
-            className="w-full bg-orange-500 text-white h-14 font-black uppercase text-[10px] tracking-[0.3em] hover:bg-white hover:text-black transition-all disabled:opacity-20"
+            className="w-full bg-orange-500 text-white h-14 font-black uppercase text-[10px] tracking-[0.3em] hover:bg-white hover:text-black transition-all disabled:opacity-20 cursor-pointer"
           >
-            {isSignUp ? 'Initialize' : 'Authorize'}
+            {isSignUp ? 'Sign Up' : 'Sign In'}
           </button>
         </form>
 
-        <div className="relative mb-8">
+        <div className="relative mb-10">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-white/5"></div>
           </div>
@@ -110,19 +110,19 @@ export const LoginPage = () => {
           <button 
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full bg-white text-black h-14 font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-4 hover:bg-orange-500 hover:text-white transition-all disabled:opacity-20"
+            className="w-full bg-white text-black h-14 font-black uppercase text-[10px] tracking-[0.3em] flex items-center justify-center gap-4 hover:bg-orange-500 hover:text-white transition-all disabled:opacity-20 cursor-pointer"
           >
             <Mail className="w-4 h-4" />
-            Sign in with Google
+            Continue with Google
           </button>
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-10 text-center border-t border-white/5 pt-8">
           <button 
             onClick={() => setIsSignUp(!isSignUp)}
-            className="text-[10px] font-black uppercase tracking-widest text-neutral-500 hover:text-orange-500 transition-colors"
+            className="text-[10px] font-black uppercase tracking-widest text-neutral-500 hover:text-orange-500 transition-colors cursor-pointer"
           >
-            {isSignUp ? 'Already have credentials? Access' : 'No credentials? Initialize'}
+            {isSignUp ? 'Already have an account? Sign In' : 'No credentials? Initialize / Sign Up'}
           </button>
         </div>
 
