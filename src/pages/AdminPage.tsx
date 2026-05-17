@@ -121,7 +121,7 @@ export const AdminPage = () => {
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to remove this item from the archive?')) return;
-    
+
     try {
       await productService.deleteProduct(id);
       setProducts(prev => prev.filter(p => p.id !== id));
@@ -211,8 +211,8 @@ export const AdminPage = () => {
             </h1>
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest mt-2 underline underline-offset-8 decoration-white/10">Manage heritage archives and stock levels</p>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => {
               if (isAdding) {
                 resetForm();
@@ -241,7 +241,7 @@ export const AdminPage = () => {
                   <div className="space-y-8">
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Garment Name</label>
-                      <input 
+                      <input
                         required
                         name="name"
                         value={formData.name}
@@ -253,7 +253,7 @@ export const AdminPage = () => {
 
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Description / Provenance</label>
-                      <textarea 
+                      <textarea
                         required
                         name="description"
                         rows={4}
@@ -267,7 +267,7 @@ export const AdminPage = () => {
                     <div className="grid grid-cols-2 gap-8">
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Category</label>
-                        <select 
+                        <select
                           name="category"
                           value={formData.category}
                           onChange={handleChange}
@@ -278,7 +278,7 @@ export const AdminPage = () => {
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Price (PKR)</label>
-                        <input 
+                        <input
                           required
                           type="number"
                           name="price"
@@ -299,7 +299,7 @@ export const AdminPage = () => {
                       <div className="space-y-4">
                         {formData.images.map((url, idx) => (
                           <div key={idx} className="relative">
-                            <input 
+                            <input
                               required
                               value={url}
                               onChange={(e) => handleImageChange(idx, e.target.value)}
@@ -312,35 +312,35 @@ export const AdminPage = () => {
                       </div>
                     </div>
 
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Inventory Status (Qty)</label>
-                        <input 
-                          required
-                          type="number"
-                          name="stock"
-                          value={formData.stock}
-                          onChange={handleChange}
-                          className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Inventory Status (Qty)</label>
+                      <input
+                        required
+                        type="number"
+                        name="stock"
+                        value={formData.stock}
+                        onChange={handleChange}
+                        className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
+                      />
+                    </div>
 
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Display Order (Arrangement)</label>
-                        <input 
-                          required
-                          type="number"
-                          name="order"
-                          value={formData.order}
-                          onChange={handleChange}
-                          className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
-                        />
-                        <p className="text-[9px] text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">Determines sequence in catalog. Use lower numbers for priority items.</p>
-                      </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Display Order (Arrangement)</label>
+                      <input
+                        required
+                        type="number"
+                        name="order"
+                        value={formData.order}
+                        onChange={handleChange}
+                        className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
+                      />
+                      <p className="text-[9px] text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">Determines sequence in catalog. Use lower numbers for priority items.</p>
                     </div>
                   </div>
+                </div>
 
                 <div className="pt-12 border-t border-white/10 flex items-center justify-end">
-                  <button 
+                  <button
                     type="submit"
                     disabled={isSaving}
                     className="bg-white text-black px-12 py-5 font-black uppercase text-xs tracking-[0.4em] hover:bg-orange-500 hover:text-white transition-all disabled:opacity-20 flex items-center gap-4"
@@ -367,36 +367,39 @@ export const AdminPage = () => {
                 products.map((product, index) => (
                   <div key={product.id} className="bg-[#111111] border border-white/10 flex overflow-hidden group">
                     <div className="w-24 h-full bg-black flex-shrink-0 border-r border-white/5 grayscale group-hover:grayscale-0 transition-all duration-500 relative">
-                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover opacity-60" />
-                      
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                      />
+
                       {/* Reorder Controls Overlay */}
                       <div className="absolute inset-0 flex flex-col items-center justify-between py-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px]">
-                        <button 
+                        <button
                           disabled={index === 0}
                           onClick={() => handleMove(index, 'up')}
                           className="p-1 hover:text-orange-500 disabled:opacity-0 transition-colors"
                           title="Move Forward"
                         >
-                          <svg className="w-4 h-4 fill-current rotate-180" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                          <svg className="w-4 h-4 fill-current rotate-180" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                         </button>
                         <span className="text-[8px] font-black">{product.order || 0}</span>
-                        <button 
+                        <button
                           disabled={index === products.length - 1}
                           onClick={() => handleMove(index, 'down')}
                           className="p-1 hover:text-orange-500 disabled:opacity-0 transition-colors"
                           title="Move Backward"
                         >
-                          <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                          <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
                         </button>
                       </div>
                     </div>
                     <div className="p-6 flex flex-col justify-between flex-grow">
                       <div>
                         <div className="flex justify-between items-start mb-2">
-                           <span className="text-[8px] font-mono text-neutral-500 uppercase">{product.sku}</span>
-                           <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase ${product.stock > 0 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
-                             {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                           </span>
+                          <span className="text-[8px] font-mono text-neutral-500 uppercase">{product.sku}</span>
+                          <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase ${product.stock > 0 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'}`}>
+                            {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                          </span>
                         </div>
                         <h3 className="text-xs font-black uppercase tracking-tight mb-4 group-hover:text-orange-500 transition-colors line-clamp-1">{product.name}</h3>
                         <p className="text-[10px] font-black">Rs. {product.price.toLocaleString()}</p>
@@ -404,18 +407,18 @@ export const AdminPage = () => {
                       <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/5">
                         <span className="text-[9px] font-bold uppercase tracking-widest text-neutral-500">{product.category}</span>
                         <div className="ml-auto flex items-center gap-2">
-                           <button 
-                             onClick={() => handleEdit(product)}
-                             className="text-[9px] font-black uppercase text-neutral-400 hover:text-white transition-colors"
-                           >
-                             Edit
-                           </button>
-                           <button 
-                             onClick={() => handleDelete(product.id)}
-                             className="p-2 hover:bg-white/5 text-neutral-500 hover:text-red-500 transition-colors"
-                           >
-                             <Trash2 className="w-4 h-4" />
-                           </button>
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="text-[9px] font-black uppercase text-neutral-400 hover:text-white transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="p-2 hover:bg-white/5 text-neutral-500 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
                     </div>

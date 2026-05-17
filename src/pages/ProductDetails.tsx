@@ -76,12 +76,6 @@ export const ProductDetailPage: React.FC = () => {
                 alt={product.name} 
                 className="max-w-full max-h-full object-contain"
               />
-              <div className="absolute top-8 left-0 right-0 flex justify-between items-center px-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-500">
-                  Inspecting Archive // {product.sku} // View {activeImage + 1}
-                </span>
-                <button className="text-[10px] font-black uppercase tracking-widest hover:text-orange-500 transition">Close [ESC]</button>
-              </div>
             </motion.div>
           </motion.div>
         )}
