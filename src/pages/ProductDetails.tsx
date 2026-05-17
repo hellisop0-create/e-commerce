@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firebase'; // Path to your firebase.ts
-import { Product } from '../types';
+import { db } from '../lib/firebase';
+import { Product, Review } from '../types';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { reviewService } from '../services/reviewService';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Plus, ShoppingBag, Info, Star, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Plus, ShoppingBag, Info, Star, ChevronRight, X, Loader2, MessageSquare } from 'lucide-react';
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { user } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingReviews, setLoadingReviews] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [isInspecting, setIsInspecting] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -25,7 +34,7 @@ export const ProductDetailPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndReviews = async () => {
       if (!id) return;
       try {
         const docRef = doc(db, 'products', id);
@@ -33,14 +42,67 @@ export const ProductDetailPage: React.FC = () => {
         if (docSnap.exists()) {
           setProduct({ id: docSnap.id, ...docSnap.data() } as Product);
         }
+        
+        // Fetch real reviews
+        const productReviews = await reviewService.getProductReviews(id);
+        setReviews(productReviews);
       } catch (error) {
-        console.error("Error fetching detail:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
+        setLoadingReviews(false);
       }
     };
-    fetchProduct();
+    fetchProductAndReviews();
   }, [id]);
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!product || !id) return;
+
+    setIsSubmitting(true);
+    try {
+      const reviewData = {
+        productId: id,
+        userId: user.uid,
+        userName: user.displayName || user.email?.split('@')[0] || 'User',
+        rating: reviewRating,
+        comment: reviewComment
+      };
+      
+      const newReviewId = await reviewService.addReview(reviewData);
+      
+      // Update local state
+      const newReview: Review = {
+        id: newReviewId,
+        ...reviewData,
+        createdAt: { toDate: () => new Date() } // Mocking timestamp for immediate UI update
+      };
+      
+      setReviews([newReview, ...reviews]);
+      setShowReviewForm(false);
+      setReviewComment('');
+      setReviewRating(5);
+      
+      // Update local product rating info
+      if (product) {
+        const currentCount = product.numReviews || 0;
+        const currentRating = product.rating || 0;
+        const newCount = currentCount + 1;
+        const newRating = ((currentRating * currentCount) + reviewRating) / newCount;
+        setProduct({ ...product, rating: newRating, numReviews: newCount });
+      }
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      alert("Submission failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (loading) return (
     <div className="min-h-screen bg-black flex items-center justify-center font-mono text-white text-[10px] uppercase tracking-[0.5em]">
@@ -146,11 +208,11 @@ export const ProductDetailPage: React.FC = () => {
               {[...Array(5)].map((_, i) => (
                 <Star 
                   key={i} 
-                  className={`w-3 h-3 ${i < (product.rating || 4.5) ? 'fill-orange-500 text-orange-500' : 'text-neutral-700'}`} 
+                  className={`w-3 h-3 ${i < Math.round(product.rating || 4.5) ? 'fill-orange-500 text-orange-500' : 'text-neutral-700'}`} 
                 />
               ))}
               <span className="text-[10px] font-mono uppercase text-neutral-500 ml-2 tracking-widest">
-                {(product.rating || 4.5).toFixed(1)} // {product.numReviews || '24'} Reviews
+                {(product.rating || 0) === 0 ? 'No Ratings' : (product.rating || 0).toFixed(1)} // {product.numReviews || 0} Member Evaluations
               </span>
             </div>
 
@@ -203,59 +265,132 @@ export const ProductDetailPage: React.FC = () => {
             <h3 className="text-4xl font-black uppercase leading-none tracking-tighter mb-8">Member<br />Feedback</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="text-5xl font-black leading-none">{(product.rating || 4.5).toFixed(1)}</div>
+                <div className="text-5xl font-black leading-none">{(product.rating || 0).toFixed(1)}</div>
                 <div>
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-3 h-3 ${i < 4 ? 'fill-orange-500 text-orange-500' : 'text-neutral-800'}`} />
+                      <Star key={i} className={`w-3 h-3 ${i < Math.round(product.rating || 0) ? 'fill-orange-500 text-orange-500' : 'text-neutral-800'}`} />
                     ))}
                   </div>
-                  <div className="text-[9px] font-mono uppercase text-neutral-500 tracking-widest mt-1">Based on {product.numReviews || '24'} ratings</div>
+                  <div className="text-[9px] font-mono uppercase text-neutral-500 tracking-widest mt-1">Based on {product.numReviews || 0} evaluations</div>
                 </div>
               </div>
               
-              {/* Rating Bars */}
               <div className="space-y-2 pt-8">
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <div key={star} className="flex items-center gap-4">
-                    <span className="text-[10px] font-mono text-neutral-500 w-2">{star}</span>
-                    <div className="flex-1 h-px bg-neutral-800 relative">
-                      <div className="absolute left-0 top-0 h-full bg-orange-500" style={{ width: star === 5 ? '70%' : star === 4 ? '20%' : '5%' }} />
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const count = reviews.filter(r => Math.round(r.rating) === star).length;
+                  const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                  return (
+                    <div key={star} className="flex items-center gap-4">
+                      <span className="text-[10px] font-mono text-neutral-500 w-2">{star}</span>
+                      <div className="flex-1 h-px bg-neutral-800 relative">
+                        <div className="absolute left-0 top-0 h-full bg-orange-500" style={{ width: `${percentage}%` }} />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
-            <button className="mt-12 w-full py-4 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+            <button 
+              onClick={() => {
+                if (!user) {
+                  navigate('/login');
+                } else {
+                  setShowReviewForm(true);
+                }
+              }}
+              className="mt-12 w-full py-4 border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+            >
               Write a Review
             </button>
           </div>
 
           <div className="lg:col-span-8">
-            <div className="space-y-12">
-              {[
-                { name: 'S. AHMED', date: '2 DAYS AGO', rating: 5, comment: 'The quality of this piece is exceptional. You can tell it\'s been carefully sourced. The fit is exactly as described in the measurements.' },
-                { name: 'K. MALIK', date: '1 WEEK AGO', rating: 4, comment: 'Perfect addition to my archive. Fast shipping and the packaging was industrial-grade premium.' },
-                { name: 'M. ZAIN', date: '2 WEEKS AGO', rating: 5, comment: 'Authentic 90s vibes. KAAM25 is the only place in PK doing this right.' }
-              ].map((review, idx) => (
-                <div key={idx} className="pb-12 border-b border-white/5 last:border-0 hover:translate-x-2 transition-transform duration-500 group">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <div className="flex gap-1 mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-2.5 h-2.5 ${i < review.rating ? 'fill-white text-white' : 'text-neutral-800'}`} />
-                        ))}
-                      </div>
-                      <h4 className="text-[11px] font-black uppercase tracking-widest">{review.name}</h4>
-                    </div>
-                    <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-widest">{review.date}</span>
+            <AnimatePresence>
+              {showReviewForm && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mb-16 border border-white/10 p-8 bg-[#0a0a0a] overflow-hidden"
+                >
+                  <div className="flex justify-between items-center mb-8">
+                    <h4 className="text-[11px] font-black uppercase tracking-widest">Share Your Experience</h4>
+                    <button onClick={() => setShowReviewForm(false)} className="text-neutral-500 hover:text-white">
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                  <p className="text-[13px] text-neutral-400 leading-relaxed max-w-2xl">
-                    {review.comment}
-                  </p>
+                  <form onSubmit={handleSubmitReview} className="space-y-6">
+                    <div className="space-y-2">
+                       <label className="text-[9px] font-bold uppercase tracking-widest text-neutral-500">Rating Intensity</label>
+                       <div className="flex gap-2">
+                         {[1, 2, 3, 4, 5].map((s) => (
+                           <button 
+                             key={s} 
+                             type="button"
+                             onClick={() => setReviewRating(s)}
+                             className="p-1"
+                           >
+                             <Star className={`w-5 h-5 ${s <= reviewRating ? 'fill-orange-500 text-orange-500' : 'text-neutral-800'}`} />
+                           </button>
+                         ))}
+                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-bold uppercase tracking-widest text-neutral-500">Commentary</label>
+                      <textarea 
+                        required
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="Detail your findings..."
+                        className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-white transition-colors min-h-[120px] resize-none"
+                      />
+                    </div>
+                    <button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-white text-black py-4 text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Commit Review'}
+                    </button>
+                  </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="space-y-12">
+              {loadingReviews ? (
+                <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-600 uppercase">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Synchronizing Feedback...
                 </div>
-              ))}
+              ) : reviews.length === 0 ? (
+                <div className="py-20 border border-white/5 flex flex-col items-center justify-center text-center">
+                  <MessageSquare className="w-8 h-8 text-neutral-800 mb-4" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-600">No archival observations recorded yet.</p>
+                </div>
+              ) : (
+                reviews.map((review, idx) => (
+                  <div key={review.id || idx} className="pb-12 border-b border-white/5 last:border-0 hover:translate-x-2 transition-transform duration-500 group">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <div className="flex gap-1 mb-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className={`w-2.5 h-2.5 ${i < review.rating ? 'fill-orange-500 text-orange-500' : 'text-neutral-800'}`} />
+                          ))}
+                        </div>
+                        <h4 className="text-[11px] font-black uppercase tracking-widest">{review.userName}</h4>
+                      </div>
+                      <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-widest">
+                        {review.createdAt?.toDate ? new Date(review.createdAt.toDate()).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recent'}
+                      </span>
+                    </div>
+                    <p className="text-[13px] text-neutral-400 leading-relaxed max-w-2xl">
+                      {review.comment}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
