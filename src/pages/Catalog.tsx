@@ -25,7 +25,7 @@ export const Catalog: React.FC = () => {
     const fetchData = async () => {
       // Define a timeout to prevent hanging on poor connections
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Network Timeout')), 15000)
+        setTimeout(() => reject(new Error('Network Timeout')), 30000)
       );
 
       try {
@@ -46,6 +46,7 @@ export const Catalog: React.FC = () => {
         try {
           const module = await import('../data/inventory');
           setProducts(module.INITIAL_INVENTORY);
+          console.warn("Using local archival fallback data due to connection issues.");
         } catch (fallbackErr) {
           console.error("Critical: Fallback data unavailable", fallbackErr);
         }

@@ -22,3 +22,5 @@ export const PRODUCT_SIZES = [
   'XXL',
   'OS'
 ];
+
+export const SHIPPING_FEE = 250;

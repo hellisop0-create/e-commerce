@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { orderService } from '../services/productService';
+import { SHIPPING_FEE } from '../constants';
 
 interface CartProps {
   isOpen: boolean;
@@ -126,7 +127,8 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               <div className="flex justify-between items-end mb-8">
                 <div>
                   <span className="text-[10px] font-bold uppercase text-neutral-500 tracking-widest block mb-1">Subtotal</span>
-                  <p className="text-4xl font-black tracking-tighter">Rs. {totalPrice.toLocaleString()}</p>
+                  <p className="text-4xl font-black tracking-tighter leading-none mb-2">Rs. {totalPrice.toLocaleString()}</p>
+                  <span className="text-[9px] font-bold uppercase text-neutral-600 tracking-tighter">+ Rs. {SHIPPING_FEE} Shipping Fee</span>
                 </div>
               </div>
 

@@ -66,16 +66,31 @@ export const AdminPage = () => {
 
   const fetchProducts = async () => {
     setIsLoading(true);
+    
+    // Add timeout to prevent infinite loading state
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Network Timeout')), 30000)
+    );
+
     try {
       console.log('Fetching products from Firestore...');
-      const data = await productService.getAllProducts();
+      const data = await Promise.race([
+        productService.getAllProducts(),
+        timeoutPromise
+      ]) as Product[];
+      
       setProducts(data);
       console.log(`Successfully fetched ${data.length} products.`);
     } catch (error) {
       console.error('Failed to fetch products:', error);
       // Fallback for UI visibility even when firestore fails
-      const module = await import('../data/inventory');
-      setProducts(module.INITIAL_INVENTORY);
+      try {
+        const module = await import('../data/inventory');
+        setProducts(module.INITIAL_INVENTORY);
+        console.warn("Using local archival fallback data in Admin Panel.");
+      } catch (e) {
+        console.error("Fallback load failed", e);
+      }
     } finally {
       setIsLoading(false);
     }

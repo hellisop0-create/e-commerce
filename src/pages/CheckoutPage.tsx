@@ -6,9 +6,11 @@ import { orderService } from '../services/productService';
 import { ShippingInfo } from '../types';
 import { motion } from 'motion/react';
 import { ArrowLeft, Package, CreditCard, ShieldCheck, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { SHIPPING_FEE } from '../constants';
 
 export const CheckoutPage = () => {
   const { cart, totalPrice, clearCart } = useCart();
+  const finalTotal = totalPrice + SHIPPING_FEE;
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -68,13 +70,13 @@ export const CheckoutPage = () => {
       if (paymentMethod === 'JazzCash') {
         // Special flow for JazzCash
         // 1. Create a "pending" order first
-        const orderId = await orderService.createOrder(user.uid, cart, totalPrice, formData, 'JazzCash');
+        const orderId = await orderService.createOrder(user.uid, cart, finalTotal, formData, 'JazzCash');
         
         // 2. Init JazzCash on server to get signed params
         const response = await fetch('/api/payments/jazzcash/init', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId, amount: totalPrice })
+          body: JSON.stringify({ orderId, amount: finalTotal })
         });
         const jazzData = await response.json();
 
@@ -97,7 +99,7 @@ export const CheckoutPage = () => {
       }
 
       // Default COD flow
-      await orderService.createOrder(user.uid, cart, totalPrice, formData, paymentMethod);
+      await orderService.createOrder(user.uid, cart, finalTotal, formData, paymentMethod);
       setIsSuccess(true);
       clearCart();
     } catch (err) {
@@ -305,11 +307,11 @@ export const CheckoutPage = () => {
             <div className="space-y-4 border-t border-white/5 pt-8">
               <div className="flex justify-between text-[10px] font-bold uppercase text-neutral-500 tracking-widest">
                 <span>Shipping Fee</span>
-                <span>Rs. 0</span>
+                <span>Rs. {SHIPPING_FEE.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-3xl font-black tracking-tighter border-t border-white/5 pt-4">
                 <span>TOTAL</span>
-                <span className="text-white">Rs. {totalPrice.toLocaleString()}</span>
+                <span className="text-white">Rs. {finalTotal.toLocaleString()}</span>
               </div>
             </div>
 
