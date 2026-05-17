@@ -34,7 +34,7 @@ export const AdminPage = () => {
     }
   });
 
-  const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms', 'Accessories'];
+  const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms'];
 
   useEffect(() => {
     if (!loading && !isAdmin) {

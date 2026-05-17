@@ -112,21 +112,5 @@ export const INITIAL_INVENTORY: Product[] = [
       seoDescription: 'Classic 90s velour sportswear jacket.',
       tags: ['sportswear', '90s', 'velour']
     }
-  },
-  {
-    id: 'p8',
-    sku: 'ACC-LTH-008',
-    name: 'Distressed Leather Belt',
-    description: 'Full-grain Italian leather belt from the 70s. Solid brass buckle with unique hand-tooled details.',
-    price: 35.00,
-    currency: 'USD',
-    category: 'Accessories',
-    images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800'],
-    stock: 12,
-    metadata: {
-      seoTitle: 'Vintage Leather Belt - RetroThreads',
-      seoDescription: 'Hand-tooled vintage leather belt with brass hardware.',
-      tags: ['leather', 'accessories', 'vintage']
-    }
   }
 ];
