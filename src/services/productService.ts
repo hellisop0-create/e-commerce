@@ -81,12 +81,35 @@ export const productService = {
     await batch.commit();
   },
 
-  async addProduct(product: Omit<Product, 'id'>): Promise<string> {
+  async addProduct(productData: Omit<Product, 'id'>): Promise<string> {
     try {
-      const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), product);
+      const docRef = doc(collection(db, PRODUCTS_COLLECTION));
+      const productWithId = { ...productData, id: docRef.id };
+      await setDoc(docRef, productWithId);
       return docRef.id;
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, PRODUCTS_COLLECTION);
+      throw error;
+    }
+  },
+
+  async updateProduct(id: string, productData: Partial<Product>): Promise<void> {
+    try {
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      await setDoc(docRef, productData, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `${PRODUCTS_COLLECTION}/${id}`);
+      throw error;
+    }
+  },
+
+  async deleteProduct(id: string): Promise<void> {
+    try {
+      const docRef = doc(db, PRODUCTS_COLLECTION, id);
+      const { deleteDoc } = await import('firebase/firestore');
+      await deleteDoc(docRef);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `${PRODUCTS_COLLECTION}/${id}`);
       throw error;
     }
   }
@@ -133,6 +156,16 @@ export const orderService = {
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, ORDERS_COLLECTION);
       return [];
+    }
+  },
+
+  async updateOrderStatus(orderId: string, status: 'pending' | 'completed' | 'cancelled'): Promise<void> {
+    try {
+      const docRef = doc(db, ORDERS_COLLECTION, orderId);
+      await setDoc(docRef, { status, updatedAt: serverTimestamp() }, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `${ORDERS_COLLECTION}/${orderId}`);
+      throw error;
     }
   }
 };

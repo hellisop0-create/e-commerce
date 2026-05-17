@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const Footer: React.FC = () => {
-  const { user } = useAuth();
-  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
+  const { user, isAdmin } = useAuth();
 
   return (
     <footer className="bg-[#0A0A0A] border-t border-white/10 pt-20 pb-10 px-8">

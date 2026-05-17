@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const AdminPage = () => {
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -15,10 +15,9 @@ export const AdminPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms', 'Accessories'];
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  // Simple admin check: only your email is allowed for now
-  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
+  const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms', 'Accessories'];
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -84,11 +83,55 @@ export const AdminPage = () => {
     setFormData(prev => ({ ...prev, images: [...prev.images, ''] }));
   };
 
+  const resetForm = () => {
+    setFormData({
+      sku: '',
+      name: '',
+      description: '',
+      price: 0,
+      currency: 'USD',
+      category: 'T-Shirts',
+      images: [''],
+      stock: 1,
+      metadata: { seoTitle: '', seoDescription: '', tags: [] }
+    });
+    setEditingProduct(null);
+    setIsAdding(false);
+  };
+
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      sku: product.sku || '',
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      currency: product.currency,
+      category: product.category,
+      images: product.images,
+      stock: product.stock,
+      metadata: product.metadata
+    });
+    setIsAdding(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to remove this item from the archive?')) return;
+    
+    try {
+      await productService.deleteProduct(id);
+      setProducts(prev => prev.filter(p => p.id !== id));
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+      alert('Delete failed');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      await productService.addProduct({
+      const payload = {
         ...formData,
         sku: formData.sku || `VTG-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
         metadata: {
@@ -96,28 +139,23 @@ export const AdminPage = () => {
           seoTitle: formData.name,
           seoDescription: formData.description.substring(0, 160)
         }
-      });
+      };
+
+      if (editingProduct) {
+        await productService.updateProduct(editingProduct.id, payload);
+      } else {
+        await productService.addProduct(payload);
+      }
+
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
-        setIsAdding(false);
+        resetForm();
         fetchProducts();
-        // Reset form
-        setFormData({
-          sku: '',
-          name: '',
-          description: '',
-          price: 0,
-          currency: 'USD',
-          category: 'T-Shirts',
-          images: [''],
-          stock: 1,
-          metadata: { seoTitle: '', seoDescription: '', tags: [] }
-        });
-      }, 2000);
+      }, 1500);
     } catch (error) {
       console.error(error);
-      alert('Failed to add product');
+      alert('Failed to save product');
     } finally {
       setIsSaving(false);
     }
@@ -132,16 +170,24 @@ export const AdminPage = () => {
               <ArrowLeft className="w-4 h-4" />
               Return to Catalog
             </Link>
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase">Inventory</h1>
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase">
+              {editingProduct ? 'Update Item' : 'Inventory'}
+            </h1>
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest mt-2 underline underline-offset-8 decoration-white/10">Manage heritage archives and stock levels</p>
           </div>
           
           <button 
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={() => {
+              if (isAdding) {
+                resetForm();
+              } else {
+                setIsAdding(true);
+              }
+            }}
             className="bg-white text-black px-8 py-4 font-black uppercase text-xs tracking-[0.3em] hover:bg-orange-500 hover:text-white transition-all flex items-center gap-3"
           >
             {isAdding ? <ArrowLeft className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-            {isAdding ? 'Cancel Entry' : 'Add New Item'}
+            {isAdding ? 'Cancel' : 'Add New Item'}
           </button>
         </div>
 
@@ -288,7 +334,16 @@ export const AdminPage = () => {
                       <div className="flex items-center gap-4 mt-6 pt-4 border-t border-white/5">
                         <span className="text-[9px] font-bold uppercase tracking-widest text-neutral-500">{product.category}</span>
                         <div className="ml-auto flex items-center gap-2">
-                           <button className="p-2 hover:bg-white/5 text-neutral-500 hover:text-white transition-colors">
+                           <button 
+                             onClick={() => handleEdit(product)}
+                             className="text-[9px] font-black uppercase text-neutral-400 hover:text-white transition-colors"
+                           >
+                             Edit
+                           </button>
+                           <button 
+                             onClick={() => handleDelete(product.id)}
+                             className="p-2 hover:bg-white/5 text-neutral-500 hover:text-red-500 transition-colors"
+                           >
                              <Trash2 className="w-4 h-4" />
                            </button>
                         </div>

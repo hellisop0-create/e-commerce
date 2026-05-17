@@ -8,9 +8,11 @@ import {
 } from 'firebase/auth';
 import { auth, db } from '../lib/firebase';
 import { doc, getDoc, setDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
+import { ADMIN_EMAILS } from '../constants';
 
 interface AuthContextType {
   user: User | null;
+  isAdmin: boolean;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -21,6 +23,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const isAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -60,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

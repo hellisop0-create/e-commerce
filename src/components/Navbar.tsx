@@ -13,14 +13,12 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSearchChange }) => {
   const { totalItems } = useCart();
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-
-  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
 
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);

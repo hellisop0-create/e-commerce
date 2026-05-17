@@ -7,12 +7,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const OrdersPage: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const isAdmin = user?.email === 'hellisop0@gmail.com' || user?.email === 'vetdrsaad5@gmail.com';
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -37,6 +35,16 @@ const OrdersPage: React.FC = () => {
       console.error('Failed to fetch orders:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async (orderId: string, newStatus: 'pending' | 'completed' | 'cancelled') => {
+    try {
+      await orderService.updateOrderStatus(orderId, newStatus);
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      alert('Status update failed');
     }
   };
 
@@ -98,12 +106,23 @@ const OrdersPage: React.FC = () => {
                         </div>
                         <div className="space-y-1">
                           <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Status</span>
-                          <div className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full inline-block ${
-                            order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500' :
-                            order.status === 'pending' ? 'bg-orange-500/10 text-orange-500' :
-                            'bg-red-500/10 text-red-500'
-                          }`}>
-                            {order.status}
+                          <div className="flex items-center gap-3">
+                            <div className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full inline-block ${
+                              order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500' :
+                              order.status === 'pending' ? 'bg-orange-500/10 text-orange-500' :
+                              'bg-red-500/10 text-red-500'
+                            }`}>
+                              {order.status}
+                            </div>
+                            <select 
+                              value={order.status}
+                              onChange={(e) => handleUpdateStatus(order.id, e.target.value as any)}
+                              className="bg-white/5 border border-white/10 text-[9px] font-bold uppercase tracking-widest p-1 focus:outline-none focus:border-orange-500 transition-colors"
+                            >
+                              <option value="pending" className="bg-black text-orange-500">PENDING</option>
+                              <option value="completed" className="bg-black text-emerald-500">COMPLETED</option>
+                              <option value="cancelled" className="bg-black text-red-500">CANCELLED</option>
+                            </select>
                           </div>
                         </div>
                       </div>
