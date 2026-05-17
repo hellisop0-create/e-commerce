@@ -15,6 +15,7 @@ import { AdminPage } from './pages/AdminPage';
 import OrdersPage from './pages/OrdersPage';
 import SearchPage from './pages/SearchPage';
 import ShippingReturns from './pages/ShippingReturns';
+import CookiePolicy from './pages/CookiePolicy';
 
 export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -37,6 +38,7 @@ export default function App() {
               <Route path="/inventory" element={<AdminPage />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/shipping-returns" element={<ShippingReturns />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/search" element={<SearchPage />} />
             </Routes>
 

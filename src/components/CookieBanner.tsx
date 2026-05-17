@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { ShieldCheck, X } from 'lucide-react';
 
 export const CookieBanner: React.FC = () => {
@@ -45,7 +46,7 @@ export const CookieBanner: React.FC = () => {
                   Data Privacy Protocol
                 </h4>
                 <p className="text-[10px] font-medium text-neutral-500 uppercase tracking-widest leading-relaxed mb-6">
-                  We utilize cookies to enhance your archival experience and optimize system architecture. Do you accept the protocols?
+                  We utilize cookies to enhance your archival experience and optimize system architecture. View our <Link to="/cookie-policy" className="text-orange-500 hover:underline">Protocols</Link>. Do you accept?
                 </p>
                 
                 <div className="flex gap-4">

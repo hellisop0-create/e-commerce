@@ -121,6 +121,8 @@ export const Footer: React.FC = () => {
           © 2026 KAAM25 SYSTEM. ALL RIGHTS RESERVED.
         </p>
         <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
+          <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
+          <a href="#" className="hover:text-white transition-colors">Privacy Protocal</a>
         </div>
       </div>
     </footer>
