@@ -233,11 +233,11 @@ export const ProductDetailPage: React.FC = () => {
                       key={size}
                       disabled={!isAvailable}
                       onClick={() => isAvailable && setSelectedSize(size)}
-                      className={`relative px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] border transition-all ${
+                      className={`relative px-8 py-4 text-xs font-black uppercase tracking-[0.2em] border transition-all ${
                         selectedSize === size
                           ? 'bg-white text-black border-white'
                           : isAvailable 
-                            ? 'bg-transparent text-neutral-500 border-white/10 hover:border-white/30'
+                            ? 'bg-transparent text-white border-white/20 hover:border-white/40'
                             : 'bg-transparent text-neutral-800 border-white/10 cursor-not-allowed overflow-hidden opacity-40'
                       }`}
                     >
