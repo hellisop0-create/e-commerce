@@ -225,18 +225,23 @@ export const CheckoutPage = () => {
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-500 mb-6">Payment Method</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
-                    { id: 'Easypaisa', label: 'Easypaisa', description: 'Wallet Transfer' },
-                    { id: 'JazzCash', label: 'JazzCash', description: 'Mobile App' },
-                    { id: 'COD', label: 'COD', description: 'Cash on Delivery' }
+                    { id: 'Easypaisa', label: 'Easypaisa', description: 'Coming Soon', disabled: true },
+                    { id: 'JazzCash', label: 'JazzCash', description: 'Coming Soon', disabled: true },
+                    { id: 'COD', label: 'COD', description: 'Cash on Delivery', disabled: false }
                   ].map((method) => (
                     <button
                       key={method.id}
                       type="button"
-                      onClick={() => setPaymentMethod(method.id as any)}
+                      disabled={method.disabled}
+                      onClick={() => !method.disabled && setPaymentMethod(method.id as any)}
                       className={`p-6 border text-left transition-all ${
                         paymentMethod === method.id 
                           ? 'bg-white border-white' 
-                          : 'bg-white/5 border-white/10 hover:border-white/30'
+                          : 'bg-white/5 border-white/10'
+                      } ${
+                        method.disabled 
+                          ? 'opacity-40 cursor-not-allowed' 
+                          : 'hover:border-white/30 cursor-pointer'
                       }`}
                     >
                       <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
@@ -245,7 +250,9 @@ export const CheckoutPage = () => {
                         {method.label}
                       </div>
                       <div className={`text-[8px] font-mono uppercase ${
-                        paymentMethod === method.id ? 'text-neutral-500' : 'text-neutral-500'
+                        paymentMethod === method.id 
+                          ? 'text-neutral-500' 
+                          : (method.disabled ? 'text-orange-500/80' : 'text-neutral-500')
                       }`}>
                         {method.description}
                       </div>
