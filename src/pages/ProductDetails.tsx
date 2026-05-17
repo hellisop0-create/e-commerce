@@ -6,6 +6,7 @@ import { Product, Review } from '../types';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { reviewService } from '../services/reviewService';
+import { PRODUCT_SIZES } from '../constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Plus, ShoppingBag, Info, Star, ChevronRight, X, Loader2, MessageSquare } from 'lucide-react';
 
@@ -222,26 +223,37 @@ export const ProductDetailPage: React.FC = () => {
               <span className="text-4xl font-black tracking-tighter">Rs. {product.price.toLocaleString()}</span>
             </div>
 
-            {product.sizes && product.sizes.length > 0 && (
-              <div className="mb-12">
-                <span className="block font-mono text-[10px] uppercase text-neutral-500 mb-6 underline underline-offset-8 decoration-white/10">Archival Fit Options</span>
-                <div className="flex flex-wrap gap-4">
-                  {product.sizes.map((size) => (
+            <div className="mb-12">
+              <span className="block font-mono text-[10px] uppercase text-neutral-500 mb-6 underline underline-offset-8 decoration-white/10">Archival Fit Options</span>
+              <div className="flex flex-wrap gap-4">
+                {PRODUCT_SIZES.map((size) => {
+                  const isAvailable = product.sizes?.includes(size);
+                  return (
                     <button
                       key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] border transition-all ${
+                      disabled={!isAvailable}
+                      onClick={() => isAvailable && setSelectedSize(size)}
+                      className={`relative px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] border transition-all ${
                         selectedSize === size
                           ? 'bg-white text-black border-white'
-                          : 'bg-transparent text-neutral-500 border-white/10 hover:border-white/30'
+                          : isAvailable 
+                            ? 'bg-transparent text-neutral-500 border-white/10 hover:border-white/30'
+                            : 'bg-transparent text-neutral-800 border-white/10 cursor-not-allowed overflow-hidden opacity-40'
                       }`}
                     >
-                      {size}
+                      <span className={!isAvailable ? 'line-through decoration-red-600 decoration-2' : ''}>
+                        {size}
+                      </span>
+                      {!isAvailable && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-[120%] h-[1px] bg-red-600 rotate-[-45deg]" />
+                        </div>
+                      )}
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
 
             <p className="text-[12px] md:text-[14px] text-neutral-400 leading-relaxed mb-12 max-w-md">
               {product.description}
