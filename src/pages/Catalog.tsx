@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { productService } from '../services/productService';
 import { Product } from '../types';
+import { PRODUCT_CATEGORIES } from '../constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, ArrowRight, Grid3X3, ListFilter, SlidersHorizontal } from 'lucide-react';
 
@@ -34,7 +35,7 @@ export const Catalog: React.FC = () => {
       });
   }, []);
 
-  const categories: string[] = ['All', ...Array.from(new Set<string>(products.map(p => p.category))).sort()];
+  const categories: string[] = ['All', ...PRODUCT_CATEGORIES];
   
   const handleFilterChange = (cat: string) => {
     setFilter(cat);

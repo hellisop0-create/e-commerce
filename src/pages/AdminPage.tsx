@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Package, Trash2, ArrowLeft, Loader2, CheckCircle2, Image as ImageIcon, ShieldAlert } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { PRODUCT_CATEGORIES } from '../constants';
 
 export const AdminPage = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -35,7 +36,7 @@ export const AdminPage = () => {
     }
   });
 
-  const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms'];
+  const categories = PRODUCT_CATEGORIES;
 
   useEffect(() => {
     if (!loading && !isAdmin) {
