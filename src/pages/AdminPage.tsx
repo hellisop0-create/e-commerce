@@ -17,6 +17,23 @@ export const AdminPage = () => {
 
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
+  // Moved to the top level to adhere strictly to the Rules of Hooks
+  const [formData, setFormData] = useState<Omit<Product, 'id'>>({
+    sku: '',
+    name: '',
+    description: '',
+    price: 0,
+    currency: 'USD',
+    category: 'T-Shirts',
+    images: [''],
+    stock: 1,
+    metadata: {
+      seoTitle: '',
+      seoDescription: '',
+      tags: []
+    }
+  });
+
   const categories = ['T-Shirts', 'Outerwear', 'Knitwear', 'Bottoms', 'Accessories'];
 
   useEffect(() => {
@@ -47,22 +64,6 @@ export const AdminPage = () => {
       </div>
     );
   }
-
-  const [formData, setFormData] = useState<Omit<Product, 'id'>>({
-    sku: '',
-    name: '',
-    description: '',
-    price: 0,
-    currency: 'USD',
-    category: 'T-Shirts',
-    images: [''],
-    stock: 1,
-    metadata: {
-      seoTitle: '',
-      seoDescription: '',
-      tags: []
-    }
-  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
