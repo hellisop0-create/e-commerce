@@ -233,22 +233,20 @@ export const ProductDetailPage: React.FC = () => {
                       key={size}
                       disabled={!isAvailable}
                       onClick={() => isAvailable && setSelectedSize(size)}
-                      className={`relative px-8 py-4 text-xs font-black uppercase tracking-[0.2em] border transition-all ${
+                      className={`relative px-8 py-4 text-base font-black uppercase tracking-[0.2em] border transition-all ${
                         selectedSize === size
                           ? 'bg-white text-black border-white'
                           : isAvailable 
-                            ? 'bg-transparent text-white border-white/20 hover:border-white/40'
-                            : 'bg-transparent text-neutral-800 border-white/10 cursor-not-allowed overflow-hidden opacity-40'
+                            ? 'bg-transparent text-white border-white/20 hover:border-white/60'
+                            : 'bg-transparent text-white border-white/5 cursor-not-allowed'
                       }`}
                     >
-                      <span className={!isAvailable ? 'line-through decoration-red-600 decoration-2' : ''}>
+                      <span className="relative">
                         {size}
+                        {!isAvailable && (
+                          <div className="absolute left-[-4px] right-[-4px] top-1/2 h-[1.5px] bg-red-600 -translate-y-1/2" />
+                        )}
                       </span>
-                      {!isAvailable && (
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-[120%] h-[1px] bg-red-600 rotate-[-45deg]" />
-                        </div>
-                      )}
                     </button>
                   );
                 })}

@@ -14,13 +14,10 @@ export const PRODUCT_CATEGORIES = [
 ];
 
 export const PRODUCT_SIZES = [
-  'XS',
   'S',
   'M',
   'L',
-  'XL',
-  'XXL',
-  'OS'
+  'XL'
 ];
 
 export const SHIPPING_FEE = 250;
