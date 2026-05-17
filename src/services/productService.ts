@@ -50,8 +50,8 @@ export const productService = {
       
       let products: Product[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
 
-      // If the database is empty or has fewer items than INITIAL_INVENTORY, sync it
-      if (products.length < INITIAL_INVENTORY.length) {
+      // If the database is empty, sync it
+      if (products.length === 0) {
         await this.syncInventory();
         const updatedSnapshot = await getDocs(q);
         products = updatedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
