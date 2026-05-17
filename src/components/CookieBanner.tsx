@@ -9,7 +9,7 @@ export const CookieBanner: React.FC = () => {
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
     if (!consent) {
-      const timer = setTimeout(() => setIsVisible(true), 1500);
+      const timer = setTimeout(() => setIsVisible(true), 1000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -28,10 +28,10 @@ export const CookieBanner: React.FC = () => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-8 left-8 right-8 md:left-auto md:right-8 md:max-w-md z-50"
+          initial={{ scale: 0.9, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 20 }}
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] max-w-lg z-[200]"
         >
           <div className="bg-[#111111] border border-white/10 p-6 shadow-2xl relative overflow-hidden group">
             {/* Background Accent */}

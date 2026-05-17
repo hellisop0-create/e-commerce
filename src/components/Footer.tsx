@@ -122,7 +122,15 @@ export const Footer: React.FC = () => {
         </p>
         <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
           <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
-          <a href="#" className="hover:text-white transition-colors">Privacy Protocal</a>
+          <button 
+            onClick={() => {
+              localStorage.removeItem('cookie-consent');
+              window.location.reload();
+            }}
+            className="hover:text-white transition-colors uppercase"
+          >
+            Manage Protocols
+          </button>
         </div>
       </div>
     </footer>
