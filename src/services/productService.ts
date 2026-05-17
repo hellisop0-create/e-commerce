@@ -10,7 +10,8 @@ import {
   deleteDoc,
   Timestamp,
   serverTimestamp,
-  writeBatch
+  writeBatch,
+  orderBy // Added for server-side sorting query support
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { Product, Order, CartItem, ShippingInfo } from '../types';
@@ -41,7 +42,11 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 export const productService = {
   async getAllProducts(): Promise<Product[]> {
     try {
-      const q = collection(db, PRODUCTS_COLLECTION);
+      // Create a native Firestore query that sorts by the order property
+      const q = query(
+        collection(db, PRODUCTS_COLLECTION), 
+        orderBy('order', 'asc')
+      );
       const snapshot = await getDocs(q);
       
       let products: Product[] = [];
@@ -53,7 +58,7 @@ export const productService = {
         products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
       }
 
-      // Sort by order field, fallback to 0
+      // Maintained your client-side sorting fallback structure for structural safety
       return products.sort((a, b) => (a.order || 0) - (b.order || 0));
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, PRODUCTS_COLLECTION);
