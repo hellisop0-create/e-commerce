@@ -7,6 +7,7 @@ import {
   query, 
   where,
   addDoc,
+  deleteDoc,
   Timestamp,
   serverTimestamp,
   writeBatch
@@ -106,7 +107,6 @@ export const productService = {
   async deleteProduct(id: string): Promise<void> {
     try {
       const docRef = doc(db, PRODUCTS_COLLECTION, id);
-      const { deleteDoc } = await import('firebase/firestore');
       await deleteDoc(docRef);
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, `${PRODUCTS_COLLECTION}/${id}`);
