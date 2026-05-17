@@ -23,18 +23,32 @@ export const Catalog: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Define a timeout to prevent hanging on poor connections
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Network Timeout')), 8000)
+      );
+
       try {
-        const [productsData, configData] = await Promise.all([
-          productService.getAllProducts(),
-          siteConfigService.getConfig()
+        const results = await Promise.race([
+          Promise.all([
+            productService.getAllProducts(),
+            siteConfigService.getConfig()
+          ]),
+          timeoutPromise
         ]);
+
+        const [productsData, configData] = results as [Product[], SiteConfig];
         setProducts(productsData);
         setSiteConfig(configData);
       } catch (err) {
-        console.error("Failed to fetch data:", err);
-        // Fallback
-        const module = await import('../data/inventory');
-        setProducts(module.INITIAL_INVENTORY);
+        console.error("Data synchronization issue:", err);
+        // Use local fallback data if firestore fails or times out
+        try {
+          const module = await import('../data/inventory');
+          setProducts(module.INITIAL_INVENTORY);
+        } catch (fallbackErr) {
+          console.error("Critical: Fallback data unavailable", fallbackErr);
+        }
       } finally {
         setIsLoading(false);
       }

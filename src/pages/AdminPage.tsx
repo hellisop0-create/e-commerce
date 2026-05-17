@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { productService, orderService } from '../services/productService';
+import { productService } from '../services/productService';
 import { reviewService } from '../services/reviewService';
-import { siteConfigService, SiteConfig } from '../services/siteConfigService';
-import { Product, Review, Order } from '../types';
+import { Product, Review } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Package, Trash2, ArrowLeft, Loader2, CheckCircle2, Image as ImageIcon, ShieldAlert, Star, MessageSquare, ClipboardList, Layout, Settings } from 'lucide-react';
+import { Plus, Package, Trash2, ArrowLeft, Loader2, CheckCircle2, Image as ImageIcon, ShieldAlert, Star, MessageSquare } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { PRODUCT_CATEGORIES } from '../constants';
@@ -22,9 +21,7 @@ export const AdminPage = () => {
 
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [allReviews, setAllReviews] = useState<Review[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
-  const [activeTab, setActiveTab] = useState<'inventory' | 'reviews' | 'orders' | 'site'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'reviews'>('inventory');
 
   // Moved to the top level to adhere strictly to the Rules of Hooks
   const [formData, setFormData] = useState<Omit<Product, 'id'>>({
@@ -52,24 +49,8 @@ export const AdminPage = () => {
     } else if (isAdmin) {
       fetchProducts();
       fetchReviews();
-      fetchOrders();
-      fetchSiteConfig();
     }
   }, [user, loading, isAdmin, navigate]);
-
-  const fetchSiteConfig = async () => {
-    const config = await siteConfigService.getConfig();
-    setSiteConfig(config);
-  };
-
-  const fetchOrders = async () => {
-    try {
-      const data = await orderService.getAllOrders();
-      setOrders(data.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)));
-    } catch (error) {
-      console.error('Failed to fetch orders:', error);
-    }
-  };
 
   const fetchReviews = async () => {
     try {
@@ -85,10 +66,15 @@ export const AdminPage = () => {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
+      console.log('Fetching products from Firestore...');
       const data = await productService.getAllProducts();
       setProducts(data);
+      console.log(`Successfully fetched ${data.length} products.`);
     } catch (error) {
       console.error('Failed to fetch products:', error);
+      // Fallback for UI visibility even when firestore fails
+      const module = await import('../data/inventory');
+      setProducts(module.INITIAL_INVENTORY);
     } finally {
       setIsLoading(false);
     }
@@ -160,11 +146,16 @@ export const AdminPage = () => {
     if (!window.confirm('Are you sure you want to remove this item from the archive?')) return;
 
     try {
+      setIsSaving(true);
       await productService.deleteProduct(id);
       setProducts(prev => prev.filter(p => p.id !== id));
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {
       console.error('Failed to delete product:', error);
-      alert('Delete failed');
+      alert(`Delete failed: ${error instanceof Error ? error.message : 'Unknown connection error'}. Please check your internet connection.`);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -206,32 +197,6 @@ export const AdminPage = () => {
       setAllReviews(prev => prev.filter(r => r.id !== reviewId));
     } catch (error) {
       console.error('Failed to delete review:', error);
-    }
-  };
-
-  const handleDeleteOrder = async (orderId: string) => {
-    if (!window.confirm('Are you sure you want to delete this order record? This is irreversible.')) return;
-    try {
-      await orderService.deleteOrder(orderId);
-      setOrders(prev => prev.filter(o => o.id !== orderId));
-    } catch (error) {
-      console.error('Failed to delete order:', error);
-    }
-  };
-
-  const handleUpdateSiteConfig = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!siteConfig) return;
-    setIsSaving(true);
-    try {
-      await siteConfigService.updateConfig(siteConfig);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 2000);
-    } catch (error) {
-      console.error(error);
-      alert('Update failed');
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -280,45 +245,21 @@ export const AdminPage = () => {
               Return to Catalog
             </Link>
             <h1 className="text-4xl sm:text-6xl font-black tracking-tighter uppercase">
-              {activeTab === 'inventory' ? (editingProduct ? 'Update Item' : 'Inventory') : 
-               activeTab === 'reviews' ? 'Feedback' :
-               activeTab === 'orders' ? 'Sales Log' : 'Site Configuration'}
+              {activeTab === 'inventory' ? (editingProduct ? 'Update Item' : 'Inventory') : 'Feedback'}
             </h1>
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest mt-2 underline underline-offset-8 decoration-white/10">
-              {activeTab === 'inventory' ? 'Manage heritage archives and stock levels' : 
-               activeTab === 'reviews' ? 'Curate and monitor member testimonials' :
-               activeTab === 'orders' ? 'Monitor archive acquisitions and transactions' :
-               'Refine the digital storefront presentation'}
+              {activeTab === 'inventory' ? 'Manage heritage archives and stock levels' : 'Curate and monitor member testimonials'}
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            <div className="flex bg-white/5 border border-white/10 p-1">
-              <button
-                onClick={() => setActiveTab('inventory')}
-                className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'inventory' ? 'bg-white text-black' : 'text-neutral-500 hover:text-white'}`}
-              >
-                <Package className="w-3 h-3" /> Inventory
-              </button>
-              <button
-                onClick={() => setActiveTab('reviews')}
-                className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'reviews' ? 'bg-white text-black' : 'text-neutral-500 hover:text-white'}`}
-              >
-                <MessageSquare className="w-3 h-3" /> Feedback
-              </button>
-              <button
-                onClick={() => setActiveTab('orders')}
-                className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'orders' ? 'bg-white text-black' : 'text-neutral-500 hover:text-white'}`}
-              >
-                <ClipboardList className="w-3 h-3" /> Orders
-              </button>
-              <button
-                onClick={() => setActiveTab('site')}
-                className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'site' ? 'bg-white text-black' : 'text-neutral-500 hover:text-white'}`}
-              >
-                <Layout className="w-3 h-3" /> Display
-              </button>
-            </div>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setActiveTab(activeTab === 'inventory' ? 'reviews' : 'inventory')}
+              className="border border-white/10 text-white px-8 py-4 font-black uppercase text-xs tracking-[0.3em] hover:bg-white/5 transition-all flex items-center gap-3"
+            >
+              {activeTab === 'inventory' ? <MessageSquare className="w-4 h-4" /> : <Package className="w-4 h-4" />}
+              {activeTab === 'inventory' ? 'View Reviews' : 'View Inventory'}
+            </button>
             
             {activeTab === 'inventory' && (
               <button
@@ -382,181 +323,6 @@ export const AdminPage = () => {
                     </div>
                   </div>
                 ))
-              )}
-            </motion.div>
-          ) : activeTab === 'orders' ? (
-            <motion.div
-              key="orders-list"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="space-y-6"
-            >
-              {orders.length === 0 ? (
-                <div className="py-32 bg-[#111111] border border-white/10 flex flex-col items-center justify-center text-center">
-                  <ClipboardList className="w-12 h-12 text-neutral-800 mb-6" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-600">No acquisition records found in the archive.</p>
-                </div>
-              ) : (
-                orders.map((order) => (
-                  <div key={order.id} className="bg-[#111111] border border-white/10 p-8">
-                    <div className="flex flex-col md:flex-row justify-between gap-8 mb-8 border-b border-white/5 pb-8">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <span className="text-[10px] font-black uppercase tracking-widest text-white">Ref: #{order.id.substring(0, 8)}</span>
-                          <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
-                            order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500' :
-                            order.status === 'pending' ? 'bg-orange-500/10 text-orange-500' :
-                            'bg-red-500/10 text-red-500'
-                          }`}>
-                            {order.status}
-                          </span>
-                        </div>
-                        <div className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">
-                          {order.createdAt?.toDate ? new Date(order.createdAt.toDate()).toLocaleString() : 'Recent'}
-                        </div>
-                        <div className="text-xs font-bold uppercase">{order.shippingInfo.fullName} • {order.shippingInfo.city}</div>
-                      </div>
-                      <div className="flex flex-col items-end gap-4">
-                        <div className="text-2xl font-black tracking-tighter">Rs. {order.total.toLocaleString()}</div>
-                        <div className="flex items-center gap-2">
-                           <button
-                             onClick={() => handleDeleteOrder(order.id)}
-                             className="p-3 hover:bg-red-500/10 text-neutral-600 hover:text-red-500 transition-all border border-transparent hover:border-red-500/20"
-                             title="Delete Order Record"
-                           >
-                              <Trash2 className="w-5 h-5" />
-                           </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-3 bg-black/40 p-2">
-                          <img src={item.product.images[0]} alt={item.product.name} className="w-10 h-10 object-cover grayscale" />
-                          <div className="min-w-0">
-                            <div className="text-[9px] font-black uppercase truncate">{item.product.name}</div>
-                            <div className="text-[8px] font-bold text-neutral-600">QTY: {item.quantity}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              )}
-            </motion.div>
-          ) : activeTab === 'site' ? (
-            <motion.div
-              key="site-config"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="bg-[#111111] border border-white/10 p-12"
-            >
-              {siteConfig && (
-                <form onSubmit={handleUpdateSiteConfig} className="space-y-16">
-                  {/* Hero Section Configuration */}
-                  <div className="space-y-10">
-                    <div className="flex items-center gap-4">
-                      <Layout className="w-5 h-5 text-orange-500" />
-                      <h3 className="text-sm font-black uppercase tracking-widest border-b border-orange-500 pb-1">Hero Display Area</h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                      <div className="space-y-8">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Headline</label>
-                          <input
-                            required
-                            value={siteConfig.heroTitle}
-                            onChange={(e) => setSiteConfig({ ...siteConfig, heroTitle: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Supporting Copy</label>
-                          <textarea
-                            required
-                            rows={3}
-                            value={siteConfig.heroSubtitle}
-                            onChange={(e) => setSiteConfig({ ...siteConfig, heroSubtitle: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors resize-none"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Background Imagery (URL)</label>
-                        <div className="relative">
-                          <input
-                            required
-                            value={siteConfig.heroImage}
-                            onChange={(e) => setSiteConfig({ ...siteConfig, heroImage: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors pl-12"
-                          />
-                          <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
-                        </div>
-                        <div className="mt-4 aspect-video border border-white/5 overflow-hidden grayscale opacity-30">
-                          <img src={siteConfig.heroImage} alt="Hero preview" className="w-full h-full object-cover" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Story Section Configuration */}
-                  <div className="space-y-10 pt-16 border-t border-white/5">
-                    <div className="flex items-center gap-4">
-                      <Star className="w-5 h-5 text-orange-500" />
-                      <h3 className="text-sm font-black uppercase tracking-widest border-b border-orange-500 pb-1">Philosophy & Narrative</h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                      <div className="space-y-8">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Section Title</label>
-                          <input
-                            required
-                            value={siteConfig.storyTitle}
-                            onChange={(e) => setSiteConfig({ ...siteConfig, storyTitle: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Brand Manifesto</label>
-                          <textarea
-                            required
-                            rows={5}
-                            value={siteConfig.storyDescription}
-                            onChange={(e) => setSiteConfig({ ...siteConfig, storyDescription: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors resize-none"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Narrative Imagery (URL)</label>
-                        <div className="relative">
-                          <input
-                            required
-                            value={siteConfig.storyImage}
-                            onChange={(e) => setSiteConfig({ ...siteConfig, storyImage: e.target.value })}
-                            className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors pl-12"
-                          />
-                          <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
-                        </div>
-                        <div className="mt-4 aspect-[4/5] border border-white/5 overflow-hidden grayscale opacity-30">
-                          <img src={siteConfig.storyImage} alt="Story preview" className="w-full h-full object-cover" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-12 border-t border-white/10 flex items-center justify-end">
-                    <button
-                      type="submit"
-                      disabled={isSaving}
-                      className="bg-white text-black px-12 py-5 font-black uppercase text-xs tracking-[0.4em] hover:bg-orange-500 hover:text-white transition-all disabled:opacity-20 flex items-center gap-4"
-                    >
-                      {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : showSuccess ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : 'Commit Global Changes'}
-                    </button>
-                  </div>
-                </form>
               )}
             </motion.div>
           ) : isAdding ? (

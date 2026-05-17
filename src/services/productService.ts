@@ -30,13 +30,18 @@ export enum OperationType {
 }
 
 function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const isOffline = error instanceof Error && (error.message.includes('offline') || error.message.includes('reach Cloud Firestore backend'));
   const errInfo = {
     error: error instanceof Error ? error.message : String(error),
     operationType,
-    path
+    path,
+    isOfflineState: isOffline
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
+  console.error('Firestore Error Response:', errInfo);
+  if (isOffline) {
+    throw new Error('Connection lost. Changes will be synced when you are back online, or operation timed out.');
+  }
+  throw new Error(error instanceof Error ? error.message : String(error));
 }
 
 export const productService = {
