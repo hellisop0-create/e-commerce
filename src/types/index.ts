@@ -6,6 +6,7 @@ export interface Product {
   price: number;
   currency: string;
   category: string;
+  sizes?: string[];
   images: string[];
   stock: number;
   order?: number;
@@ -21,6 +22,7 @@ export interface Product {
 export interface CartItem {
   productId: string;
   quantity: number;
+  selectedSize?: string;
   product: Product;
 }
 

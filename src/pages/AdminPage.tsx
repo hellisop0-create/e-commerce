@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Package, Trash2, ArrowLeft, Loader2, CheckCircle2, Image as ImageIcon, ShieldAlert, Star, MessageSquare } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { PRODUCT_CATEGORIES } from '../constants';
+import { PRODUCT_CATEGORIES, PRODUCT_SIZES } from '../constants';
 import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
@@ -31,6 +31,7 @@ export const AdminPage = () => {
     price: 0,
     currency: 'PKR',
     category: 'T-Shirts',
+    sizes: [],
     images: [''],
     stock: 1,
     order: 0,
@@ -116,6 +117,7 @@ export const AdminPage = () => {
       price: 0,
       currency: 'PKR',
       category: 'T-Shirts',
+      sizes: [],
       images: [''],
       stock: 1,
       order: 0,
@@ -134,6 +136,7 @@ export const AdminPage = () => {
       price: product.price,
       currency: product.currency,
       category: product.category,
+      sizes: product.sizes || [],
       images: product.images,
       stock: product.stock,
       order: product.order || 0,
@@ -384,6 +387,33 @@ export const AdminPage = () => {
                           className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
                         />
                       </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Archival Size Options</label>
+                      <div className="flex flex-wrap gap-2">
+                        {PRODUCT_SIZES.map(size => (
+                          <button
+                            key={size}
+                            type="button"
+                            onClick={() => {
+                              const currentSizes = formData.sizes || [];
+                              const newSizes = currentSizes.includes(size)
+                                ? currentSizes.filter(s => s !== size)
+                                : [...currentSizes, size];
+                              setFormData(prev => ({ ...prev, sizes: newSizes }));
+                            }}
+                            className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest border transition-all ${
+                              (formData.sizes || []).includes(size)
+                                ? 'bg-white text-black border-white'
+                                : 'bg-transparent text-neutral-500 border-white/10 hover:border-white/30'
+                            }`}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-[8px] text-neutral-500 uppercase tracking-widest">Select all applicable sizes for this archival entry.</p>
                     </div>
                   </div>
 

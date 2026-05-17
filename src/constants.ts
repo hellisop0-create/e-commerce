@@ -12,3 +12,13 @@ export const PRODUCT_CATEGORIES = [
   'Outerwear',
   'Knitwear'
 ];
+
+export const PRODUCT_SIZES = [
+  'XS',
+  'S',
+  'M',
+  'L',
+  'XL',
+  'XXL',
+  'OS'
+];

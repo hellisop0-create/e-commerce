@@ -20,6 +20,7 @@ export const ProductDetailPage: React.FC = () => {
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
   const [isInspecting, setIsInspecting] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -221,20 +222,51 @@ export const ProductDetailPage: React.FC = () => {
               <span className="text-4xl font-black tracking-tighter">Rs. {product.price.toLocaleString()}</span>
             </div>
 
+            {product.sizes && product.sizes.length > 0 && (
+              <div className="mb-12">
+                <span className="block font-mono text-[10px] uppercase text-neutral-500 mb-6 underline underline-offset-8 decoration-white/10">Archival Fit Options</span>
+                <div className="flex flex-wrap gap-4">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-8 py-4 text-[10px] font-black uppercase tracking-[0.2em] border transition-all ${
+                        selectedSize === size
+                          ? 'bg-white text-black border-white'
+                          : 'bg-transparent text-neutral-500 border-white/10 hover:border-white/30'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <p className="text-[12px] md:text-[14px] text-neutral-400 leading-relaxed mb-12 max-w-md">
               {product.description}
             </p>
 
             <div className="space-y-4">
               <button 
-                onClick={() => addToCart(product)}
+                onClick={() => {
+                  if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+                    alert('Please select a size');
+                    return;
+                  }
+                  addToCart(product, 1, selectedSize || undefined);
+                }}
                 className="w-full bg-white text-black py-5 text-[11px] font-black uppercase tracking-[0.4em] hover:bg-orange-500 hover:text-white transition-all flex items-center justify-center gap-3 border border-white"
               >
                 <Plus className="w-4 h-4" /> Add to Order
               </button>
               <button 
                 onClick={() => {
-                  addToCart(product);
+                  if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+                    alert('Please select a size');
+                    return;
+                  }
+                  addToCart(product, 1, selectedSize || undefined);
                   navigate('/checkout');
                 }}
                 className="w-full bg-orange-500 text-white py-5 text-[11px] font-black uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all flex items-center justify-center gap-3 border border-orange-500"

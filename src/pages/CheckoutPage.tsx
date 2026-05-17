@@ -283,15 +283,18 @@ export const CheckoutPage = () => {
           <div className="bg-[#111111] border border-white/10 p-8 sticky top-32">
             <h3 className="text-xl font-black uppercase tracking-tighter mb-8 pb-4 border-b border-white/5">Order Manifest</h3>
             <div className="space-y-6 mb-12">
-              {cart.map(item => (
-                <div key={item.productId} className="flex justify-between items-start gap-4">
+              {cart.map((item, idx) => (
+                <div key={`${item.productId}-${item.selectedSize || 'no-size'}-${idx}`} className="flex justify-between items-start gap-4">
                   <div className="flex gap-4">
                     <div className="w-12 h-12 bg-black border border-white/5 flex-shrink-0">
                       <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover opacity-50" />
                     </div>
                     <div>
                       <h4 className="text-[11px] font-black uppercase tracking-tight leading-none mb-1">{item.product.name}</h4>
-                      <p className="text-[9px] font-mono text-neutral-600 uppercase">Qty: {item.quantity}</p>
+                      <p className="text-[9px] font-mono text-neutral-600 uppercase flex items-center gap-2">
+                        Qty: {item.quantity}
+                        {item.selectedSize && <span className="text-orange-500">/ Size: {item.selectedSize}</span>}
+                      </p>
                     </div>
                   </div>
                   <span className="text-[11px] font-black">Rs. {(item.product.price * item.quantity).toLocaleString()}</span>

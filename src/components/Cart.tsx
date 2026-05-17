@@ -66,9 +66,9 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                   </div>
                 </div>
               ) : (
-                cart.map((item) => (
+                cart.map((item, idx) => (
                   <motion.div 
-                    key={item.productId}
+                    key={`${item.productId}-${item.selectedSize || 'no-size'}-${idx}`}
                     layout
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -86,26 +86,31 @@ export const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                         <h3 className="font-black text-sm uppercase tracking-tight truncate border-b border-white/10 pb-1">{item.product.name}</h3>
                         <p className="font-black text-sm text-orange-500">Rs. {(item.product.price * item.quantity).toLocaleString()}</p>
                       </div>
-                      <p className="font-mono text-[10px] text-neutral-500 mt-2 uppercase">Vintage / {item.product.category}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                         <p className="font-mono text-[10px] text-neutral-500 uppercase tracking-tighter">Vintage / {item.product.category}</p>
+                         {item.selectedSize && (
+                           <span className="text-[9px] font-black bg-white/10 px-2 py-0.5 border border-white/10">SIZE: {item.selectedSize}</span>
+                         )}
+                      </div>
                       
                       <div className="mt-6 flex items-center justify-between">
                         <div className="flex items-center bg-white/5 rounded-none border border-white/10">
                           <button 
-                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.productId, item.quantity - 1, item.selectedSize)}
                             className="p-2 hover:bg-white/10 transition-colors"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
                           <span className="px-4 text-[10px] font-black">{item.quantity.toString().padStart(2, '0')}</span>
                           <button 
-                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.productId, item.quantity + 1, item.selectedSize)}
                             className="p-2 hover:bg-white/10 transition-colors"
                           >
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
                         <button 
-                          onClick={() => removeFromCart(item.productId)}
+                          onClick={() => removeFromCart(item.productId, item.selectedSize)}
                           className="text-neutral-600 hover:text-white transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
