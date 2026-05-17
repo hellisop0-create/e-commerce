@@ -44,15 +44,17 @@ export const productService = {
       const q = collection(db, PRODUCTS_COLLECTION);
       const snapshot = await getDocs(q);
       
-      // Changed to strictly check if empty so manual deletions are not overridden by auto-seeding
+      let products: Product[] = [];
       if (snapshot.empty) {
         await this.seedProducts();
-        // Fetch again to get everything
         const updatedSnapshot = await getDocs(q);
-        return updatedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+        products = updatedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+      } else {
+        products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
       }
-      
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+
+      // Sort by order field, fallback to 0
+      return products.sort((a, b) => (a.order || 0) - (b.order || 0));
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, PRODUCTS_COLLECTION);
       return [];

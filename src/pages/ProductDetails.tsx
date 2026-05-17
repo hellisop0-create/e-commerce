@@ -95,9 +95,8 @@ export const ProductDetailPage: React.FC = () => {
         >
           <ArrowLeft className="w-3 h-3" /> Back to Grid
         </button>
-        <div className="hidden md:block">
-          <span className="font-mono text-[10px] text-neutral-500 uppercase">Archive // {product.sku}</span>
-        </div>
+        {/* Placeholder for alignment */}
+        <div className="hidden md:block w-32" /> 
       </div>
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
@@ -110,9 +109,6 @@ export const ProductDetailPage: React.FC = () => {
               onClick={() => setIsInspecting(true)}
               className="border border-white/10 aspect-[4/5] md:aspect-square grayscale hover:grayscale-0 transition-all duration-700 bg-[#111111] overflow-hidden cursor-zoom-in group relative"
             >
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors z-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] bg-white text-black px-4 py-2">Inspect Item</span>
-              </div>
               <img 
                 src={product.images[activeImage]} 
                 alt={product.name} 

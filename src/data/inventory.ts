@@ -11,6 +11,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'T-Shirts',
     images: ['https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800'],
     stock: 5,
+    order: 1,
     metadata: {
       seoTitle: 'Vintage 90s Graphic Tee - RetroThreads',
       seoDescription: 'Authentic vintage 90s streetwear t-shirt.',
@@ -27,6 +28,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'Outerwear',
     images: ['https://images.unsplash.com/photo-1527010159945-c42509220548?auto=format&fit=crop&q=80&w=800'],
     stock: 2,
+    order: 2,
     metadata: {
       seoTitle: 'Vintage Denim Jacket - Sustainable Style',
       seoDescription: '80s era rigid denim jacket for vintage enthusiasts.',
@@ -43,6 +45,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'Outerwear',
     images: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800'],
     stock: 3,
+    order: 3,
     metadata: {
       seoTitle: 'Vintage Chore Coat - RetroThreads',
       seoDescription: 'Durable faded canvas chore coat for a rugged look.',
@@ -59,6 +62,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'Knitwear',
     images: ['https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800'],
     stock: 8,
+    order: 4,
     metadata: {
       seoTitle: 'Hand-Knit Vintage Sweater - RetroThreads',
       seoDescription: 'Warm cable knit wool sweater for a cozy vintage vibe.',
@@ -75,6 +79,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'Bottoms',
     images: ['https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&q=80&w=800'],
     stock: 4,
+    order: 5,
     metadata: {
       seoTitle: 'Vintage 501 Cropped Denim - RetroThreads',
       seoDescription: 'Hand-picked vintage 501 jeans with a custom crop.',
@@ -91,6 +96,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'Bottoms',
     images: ['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800'],
     stock: 6,
+    order: 6,
     metadata: {
       seoTitle: 'Vintage Military Fatigue Pants - RetroThreads',
       seoDescription: 'Authentic 80s military surplus field trousers.',
@@ -107,6 +113,7 @@ export const INITIAL_INVENTORY: Product[] = [
     category: 'Outerwear',
     images: ['https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&q=80&w=800'],
     stock: 3,
+    order: 7,
     metadata: {
       seoTitle: 'Vintage Velour Track Jacket - RetroThreads',
       seoDescription: 'Classic 90s velour sportswear jacket.',

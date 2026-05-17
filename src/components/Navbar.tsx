@@ -20,6 +20,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
+  React.useEffect(() => {
+    if (location.pathname === '/search') {
+      onSearchChange('');
+      setIsSearchExpanded(false);
+    }
+  }, [location.pathname]);
+
   const scrollToSection = (sectionId: string) => {
     setIsMobileMenuOpen(false);
     if (location.pathname !== '/') {
@@ -82,7 +89,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
                   placeholder="SEARCH GEAR..."
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
-                  onBlur={() => !searchQuery && setIsSearchExpanded(false)}
+                  onBlur={() => {
+                    // Small timeout to allow handleSearch click to register
+                    setTimeout(() => setIsSearchExpanded(false), 200);
+                  }}
                   className="bg-white/5 border border-white/10 rounded-full py-2 pl-12 pr-4 text-[10px] sm:text-xs font-bold tracking-widest uppercase focus:outline-none focus:border-orange-500 transition-all w-full placeholder:text-neutral-600"
                 />
               )}

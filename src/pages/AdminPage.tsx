@@ -27,6 +27,7 @@ export const AdminPage = () => {
     category: 'T-Shirts',
     images: [''],
     stock: 1,
+    order: 0,
     metadata: {
       seoTitle: '',
       seoDescription: '',
@@ -67,7 +68,7 @@ export const AdminPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === 'price' || name === 'stock') {
+    if (name === 'price' || name === 'stock' || name === 'order') {
       setFormData(prev => ({ ...prev, [name]: parseFloat(value) || 0 }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
@@ -94,6 +95,7 @@ export const AdminPage = () => {
       category: 'T-Shirts',
       images: [''],
       stock: 1,
+      order: 0,
       metadata: { seoTitle: '', seoDescription: '', tags: [] }
     });
     setEditingProduct(null);
@@ -111,6 +113,7 @@ export const AdminPage = () => {
       category: product.category,
       images: product.images,
       stock: product.stock,
+      order: product.order || 0,
       metadata: product.metadata
     });
     setIsAdding(true);
@@ -128,6 +131,37 @@ export const AdminPage = () => {
     }
   };
 
+  const handleMove = async (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= products.length) return;
+
+    const items = [...products];
+    const currentItem = { ...items[index] };
+    const neighborItem = { ...items[newIndex] };
+
+    // Swap order values
+    const tempOrder = currentItem.order || 0;
+    currentItem.order = neighborItem.order || 0;
+    neighborItem.order = tempOrder;
+
+    // Local update for immediate feedback
+    items[index] = neighborItem;
+    items[newIndex] = currentItem;
+    setProducts(items);
+
+    try {
+      // Update both in database
+      await Promise.all([
+        productService.updateProduct(currentItem.id, { order: currentItem.order }),
+        productService.updateProduct(neighborItem.id, { order: neighborItem.order })
+      ]);
+      fetchProducts(); // Refresh to ensure sync
+    } catch (error) {
+      console.error('Reorder failed:', error);
+      fetchProducts(); // Rollback local state
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -135,6 +169,7 @@ export const AdminPage = () => {
       const payload = {
         ...formData,
         sku: formData.sku || `VTG-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
+        order: editingProduct ? formData.order : (products.length > 0 ? Math.max(...products.map(p => p.order || 0)) + 1 : 1),
         metadata: {
           ...formData.metadata,
           seoTitle: formData.name,
@@ -277,19 +312,32 @@ export const AdminPage = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Inventory Status (Qty)</label>
-                      <input 
-                        required
-                        type="number"
-                        name="stock"
-                        value={formData.stock}
-                        onChange={handleChange}
-                        className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
-                      />
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Inventory Status (Qty)</label>
+                        <input 
+                          required
+                          type="number"
+                          name="stock"
+                          value={formData.stock}
+                          onChange={handleChange}
+                          className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Display Order (Arrangement)</label>
+                        <input 
+                          required
+                          type="number"
+                          name="order"
+                          value={formData.order}
+                          onChange={handleChange}
+                          className="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
+                        />
+                        <p className="text-[9px] text-neutral-500 font-bold uppercase tracking-widest leading-relaxed">Determines sequence in catalog. Use lower numbers for priority items.</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
                 <div className="pt-12 border-t border-white/10 flex items-center justify-end">
                   <button 
@@ -316,10 +364,31 @@ export const AdminPage = () => {
                   <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-500">Syncing database...</span>
                 </div>
               ) : (
-                products.map(product => (
+                products.map((product, index) => (
                   <div key={product.id} className="bg-[#111111] border border-white/10 flex overflow-hidden group">
-                    <div className="w-24 h-full bg-black flex-shrink-0 border-r border-white/5 grayscale group-hover:grayscale-0 transition-all duration-500">
+                    <div className="w-24 h-full bg-black flex-shrink-0 border-r border-white/5 grayscale group-hover:grayscale-0 transition-all duration-500 relative">
                       <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover opacity-60" />
+                      
+                      {/* Reorder Controls Overlay */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-between py-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 backdrop-blur-[2px]">
+                        <button 
+                          disabled={index === 0}
+                          onClick={() => handleMove(index, 'up')}
+                          className="p-1 hover:text-orange-500 disabled:opacity-0 transition-colors"
+                          title="Move Forward"
+                        >
+                          <svg className="w-4 h-4 fill-current rotate-180" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                        </button>
+                        <span className="text-[8px] font-black">{product.order || 0}</span>
+                        <button 
+                          disabled={index === products.length - 1}
+                          onClick={() => handleMove(index, 'down')}
+                          className="p-1 hover:text-orange-500 disabled:opacity-0 transition-colors"
+                          title="Move Backward"
+                        >
+                          <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                        </button>
+                      </div>
                     </div>
                     <div className="p-6 flex flex-col justify-between flex-grow">
                       <div>
