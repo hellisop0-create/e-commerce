@@ -44,8 +44,8 @@ export const productService = {
       const q = collection(db, PRODUCTS_COLLECTION);
       const snapshot = await getDocs(q);
       
-      // If we have items in code that aren't in DB, seed them
-      if (snapshot.size < INITIAL_INVENTORY.length) {
+      // Changed to strictly check if empty so manual deletions are not overridden by auto-seeding
+      if (snapshot.empty) {
         await this.seedProducts();
         // Fetch again to get everything
         const updatedSnapshot = await getDocs(q);
