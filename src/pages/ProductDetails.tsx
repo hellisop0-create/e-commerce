@@ -237,8 +237,8 @@ export const ProductDetailPage: React.FC = () => {
                         selectedSize === size
                           ? 'bg-white text-black border-white'
                           : isAvailable 
-                            ? 'bg-transparent text-white border-white/20 hover:border-white/60'
-                            : 'bg-transparent text-white border-white/5 cursor-not-allowed'
+                            ? 'bg-transparent text-white border-white/50 hover:border-white/60'
+                            : 'bg-transparent text-white border-white/50 cursor-not-allowed'
                       }`}
                     >
                       <span className="relative">
