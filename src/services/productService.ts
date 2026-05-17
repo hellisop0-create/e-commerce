@@ -42,23 +42,21 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 export const productService = {
   async getAllProducts(): Promise<Product[]> {
     try {
-      // Create a native Firestore query that sorts by the order property
       const q = query(
         collection(db, PRODUCTS_COLLECTION), 
         orderBy('order', 'asc')
       );
       const snapshot = await getDocs(q);
       
-      let products: Product[] = [];
-      if (snapshot.empty) {
-        await this.seedProducts();
+      let products: Product[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+
+      // If the database is empty or has fewer items than INITIAL_INVENTORY, sync it
+      if (products.length < INITIAL_INVENTORY.length) {
+        await this.syncInventory();
         const updatedSnapshot = await getDocs(q);
         products = updatedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
-      } else {
-        products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
       }
 
-      // Maintained your client-side sorting fallback structure for structural safety
       return products.sort((a, b) => (a.order || 0) - (b.order || 0));
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, PRODUCTS_COLLECTION);
@@ -84,9 +82,13 @@ export const productService = {
     const batch = writeBatch(db);
     INITIAL_INVENTORY.forEach(product => {
       const ref = doc(db, PRODUCTS_COLLECTION, product.id);
-      batch.set(ref, product);
+      batch.set(ref, product, { merge: true });
     });
     await batch.commit();
+  },
+
+  async syncInventory() {
+    await this.seedProducts();
   },
 
   async addProduct(productData: Omit<Product, 'id'>): Promise<string> {

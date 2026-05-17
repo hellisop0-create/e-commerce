@@ -119,5 +119,141 @@ export const INITIAL_INVENTORY: Product[] = [
       seoDescription: 'Classic 90s velour sportswear jacket.',
       tags: ['sportswear', '90s', 'velour']
     }
+  },
+  {
+    id: 'p8',
+    sku: 'GYM-VTG-008',
+    name: 'Retro Mesh Training Shorts',
+    description: 'Heavyweight mesh training shorts from the 1980s. Boxy fit with classic athletic stripes and drawstring.',
+    price: 3200.00,
+    currency: 'PKR',
+    category: 'Gymwear',
+    images: ['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=800'],
+    stock: 12,
+    order: 8,
+    metadata: {
+      seoTitle: 'Vintage Mesh Gym Shorts - KAAM25',
+      seoDescription: 'Authentic 80s mesh training shorts for gym or street.',
+      tags: ['gymwear', '80s', 'athletic']
+    }
+  },
+  {
+    id: 'p9',
+    sku: 'CPX-CAR-009',
+    name: 'Military Surplus 6-Pocket Cargos',
+    description: 'Rugged ripstop cotton cargo pants with six tactical pockets. Adjustable hems and reinforced knees.',
+    price: 7800.00,
+    currency: 'PKR',
+    category: 'Six-Pockets',
+    images: ['https://images.unsplash.com/photo-1621072156002-e2fcced0b170?auto=format&fit=crop&q=80&w=800'],
+    stock: 7,
+    order: 9,
+    metadata: {
+      seoTitle: 'Military 6-Pocket Cargo Pants - KAAM25',
+      seoDescription: 'Durable ripstop cotton cargos with six-pocket utility.',
+      tags: ['six-pockets', 'cargo', 'military', 'utility']
+    }
+  },
+  {
+    id: 'p10',
+    sku: 'OVR-HOD-010',
+    name: 'Heavyweight Oversized Hoodie',
+    description: 'Supreme comfort with this 500GSM heavyweight fleece hoodie. Extreme drop shoulders and cropped body for a modern silhouette.',
+    price: 8900.00,
+    currency: 'PKR',
+    category: 'Oversized',
+    images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80&w=800'],
+    stock: 15,
+    order: 10,
+    metadata: {
+      seoTitle: 'Heavyweight Oversized Hoodie - KAAM25',
+      seoDescription: 'Modern oversized fit heavyweight fleece hoodie.',
+      tags: ['oversized', 'hoodie', 'streetwear', 'fleece']
+    }
+  },
+  {
+    id: 'p11',
+    sku: 'TEE-BXY-011',
+    name: 'Boxy Essential Tee',
+    description: 'The perfect foundation piece. Heavily washed cotton with a boxy, slightly cropped fit and mock neck collar.',
+    price: 2800.00,
+    currency: 'PKR',
+    category: 'T-Shirts',
+    images: ['https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&q=80&w=800'],
+    stock: 20,
+    order: 11,
+    metadata: {
+      seoTitle: 'Boxy Essential T-Shirt - KAAM25',
+      seoDescription: 'Premium cotton boxy fit t-shirt for daily rotation.',
+      tags: ['tshirt', 'boxy', 'essential']
+    }
+  },
+  {
+    id: 'p12',
+    sku: 'BOT-CAR-012',
+    name: 'Tech Ripstop Bottoms',
+    description: 'Lightweight tech-focused bottom with water-resistant finish and adjustable cinch hems. Multi-pocket utility.',
+    price: 6200.00,
+    currency: 'PKR',
+    category: 'Bottoms',
+    images: ['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800'],
+    stock: 10,
+    order: 12,
+    metadata: {
+      seoTitle: 'Tech Ripstop Bottoms - KAAM25',
+      seoDescription: 'Utility-focused tech ripstop trousers.',
+      tags: ['bottoms', 'techwear', 'utility']
+    }
+  },
+  {
+    id: 'p13',
+    sku: 'TEE-OVR-013',
+    name: 'Vintage Wash Oversized Tee',
+    description: 'Ultra-heavy 300GSM cotton tee with a natural sun-faded wash. Dropped shoulders and a relaxed neck for the ultimate oversized silhouette.',
+    price: 3500.00,
+    currency: 'PKR',
+    category: 'Oversized',
+    images: ['https://images.unsplash.com/photo-1583743814966-8936f5b7dc7a?auto=format&fit=crop&q=80&w=800'],
+    stock: 12,
+    order: 13,
+    metadata: {
+      seoTitle: 'Vintage Wash Oversized Tee - KAAM25',
+      seoDescription: 'Premium heavyweight oversized vintage wash t-shirt.',
+      tags: ['oversized', 'tee', 'vintage-wash']
+    }
+  },
+  {
+    id: 'p14',
+    sku: 'SKT-CAR-014',
+    name: 'Urban Tactical Six-Pockets',
+    description: 'Modern interpretation of classic cargo pants. Six functional pockets with reinforced stitching and weather-resistant fabric.',
+    price: 8500.00,
+    currency: 'PKR',
+    category: 'Six-Pockets',
+    images: ['https://images.unsplash.com/photo-1621072156002-e2fcced0b170?auto=format&fit=crop&q=80&w=800'],
+    stock: 5,
+    order: 14,
+    metadata: {
+      seoTitle: 'Urban Tactical Cargo Pants - KAAM25',
+      seoDescription: 'Tactical six-pocket cargo pants for urban exploration.',
+      tags: ['six-pockets', 'tactical', 'cargo']
+    }
+  },
+  {
+    id: 'p15',
+    sku: 'GYM-SET-015',
+    name: 'Reactive Training Set',
+    description: 'High-performance gymwear set featuring moisture-wicking technology and 4-way stretch fabric for maximum mobility.',
+    price: 5800.00,
+    currency: 'PKR',
+    category: 'Gymwear',
+    images: ['https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800'],
+    stock: 8,
+    order: 15,
+    metadata: {
+      seoTitle: 'Reactive Training Gym Set - KAAM25',
+      seoDescription: 'Performance focused gymwear set for athletes.',
+      tags: ['gymwear', 'training', 'performance']
+    }
   }
 ];

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { productService } from '../services/productService';
 import { Product } from '../types';
@@ -8,7 +9,14 @@ import { Sparkles, ArrowRight, Grid3X3, ListFilter, SlidersHorizontal } from 'lu
 export const Catalog: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParams = searchParams.get('category') || 'All';
+  const [filter, setFilter] = useState(filterParams);
+
+  useEffect(() => {
+    // Sync local filter state with url search param
+    setFilter(filterParams);
+  }, [filterParams]);
 
   useEffect(() => {
     productService.getAllProducts()
@@ -26,8 +34,18 @@ export const Catalog: React.FC = () => {
       });
   }, []);
 
-  const categories = ['All', ...new Set(products.map(p => p.category))];
+  const categories: string[] = ['All', ...Array.from(new Set<string>(products.map(p => p.category))).sort()];
   
+  const handleFilterChange = (cat: string) => {
+    setFilter(cat);
+    if (cat === 'All') {
+      searchParams.delete('category');
+    } else {
+      searchParams.set('category', cat);
+    }
+    setSearchParams(searchParams);
+  };
+
   const filteredProducts = products.filter(p => {
     return filter === 'All' || p.category === filter;
   });
@@ -100,7 +118,7 @@ export const Catalog: React.FC = () => {
           {/* Mobile Categories - Horizontal Scroll */}
           <div className="lg:hidden mb-12">
             <div className="flex items-center justify-between mb-4 px-1">
-              <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest underline underline-offset-4 decoration-white/10">Browse Gear</span>
+              <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest underline underline-offset-4 decoration-white/10">Categories</span>
               <span className="text-[9px] font-bold text-orange-500 uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
                 Swipe to explore <ArrowRight className="w-3 h-3" />
               </span>
@@ -109,7 +127,7 @@ export const Catalog: React.FC = () => {
               {categories.map(cat => (
                 <button
                   key={cat}
-                  onClick={() => setFilter(cat)}
+                  onClick={() => handleFilterChange(cat)}
                   className={`whitespace-nowrap px-6 py-3 text-[10px] font-black uppercase tracking-widest border transition-all ${
                     filter === cat 
                       ? 'bg-white text-black border-white' 
@@ -126,12 +144,12 @@ export const Catalog: React.FC = () => {
           <aside className="hidden lg:block lg:w-64 flex-shrink-0">
             <div className="sticky top-32 space-y-12">
               <div>
-                <h3 className="text-[10px] font-bold tracking-[0.3em] uppercase text-neutral-500 mb-6 underline underline-offset-4 decoration-white/10">Browse Gear</h3>
+                <h3 className="text-[10px] font-bold tracking-[0.3em] uppercase text-neutral-500 mb-6 underline underline-offset-4 decoration-white/10">Archive Filter</h3>
                 <div className="space-y-2">
                   {categories.map(cat => (
                     <button
                       key={cat}
-                      onClick={() => setFilter(cat)}
+                      onClick={() => handleFilterChange(cat)}
                       className={`block w-full text-left text-xs font-black uppercase tracking-widest py-2 px-3 transition-all ${
                         filter === cat 
                           ? 'bg-white text-black translate-x-2' 
