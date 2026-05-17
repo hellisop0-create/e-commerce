@@ -9,6 +9,8 @@ export interface Product {
   images: string[];
   stock: number;
   order?: number;
+  rating?: number;
+  numReviews?: number;
   metadata: {
     seoTitle: string;
     seoDescription: string;

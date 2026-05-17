@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Cart } from './components/Cart';
+import { CookieBanner } from './components/CookieBanner';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { Catalog } from './pages/Catalog';
@@ -40,6 +41,7 @@ export default function App() {
             </Routes>
 
             <Footer />
+            <CookieBanner />
         </div>
       </BrowserRouter>
     </CartProvider>
