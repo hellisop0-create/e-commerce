@@ -8,8 +8,7 @@ const app = initializeApp(firebaseConfig);
 
 // Connect to the specific database ID specified in the configuration
 export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-  // Increase timeout or other settings if needed
+  // Using standard configuration for better speed on supported networks
 }, firebaseConfig.firestoreDatabaseId || "(default)");
 
 // Enable offline persistence for better resilience

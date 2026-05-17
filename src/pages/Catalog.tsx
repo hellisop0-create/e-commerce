@@ -25,7 +25,7 @@ export const Catalog: React.FC = () => {
     const fetchData = async () => {
       // Define a timeout to prevent hanging on poor connections
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Network Timeout')), 8000)
+        setTimeout(() => reject(new Error('Network Timeout')), 15000)
       );
 
       try {
