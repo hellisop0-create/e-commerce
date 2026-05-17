@@ -4,11 +4,13 @@ import { ProductCard } from '../components/ProductCard';
 import { productService } from '../services/productService';
 import { Product } from '../types';
 import { PRODUCT_CATEGORIES } from '../constants';
+import { siteConfigService, SiteConfig } from '../services/siteConfigService';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, ArrowRight, Grid3X3, ListFilter, SlidersHorizontal } from 'lucide-react';
+import { Sparkles, ArrowRight, Grid3X3, ListFilter, SlidersHorizontal, Loader2 } from 'lucide-react';
 
 export const Catalog: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const filterParams = searchParams.get('category') || 'All';
@@ -20,19 +22,24 @@ export const Catalog: React.FC = () => {
   }, [filterParams]);
 
   useEffect(() => {
-    productService.getAllProducts()
-      .then(data => {
-        setProducts(data);
+    const fetchData = async () => {
+      try {
+        const [productsData, configData] = await Promise.all([
+          productService.getAllProducts(),
+          siteConfigService.getConfig()
+        ]);
+        setProducts(productsData);
+        setSiteConfig(configData);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+        // Fallback
+        const module = await import('../data/inventory');
+        setProducts(module.INITIAL_INVENTORY);
+      } finally {
         setIsLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to fetch products:", err);
-        // Fallback to initial inventory for demo stability if firestore fails
-        import('../data/inventory').then(module => {
-          setProducts(module.INITIAL_INVENTORY);
-          setIsLoading(false);
-        });
-      });
+      }
+    };
+    fetchData();
   }, []);
 
   const categories: string[] = ['All', ...PRODUCT_CATEGORIES];
@@ -58,7 +65,7 @@ export const Catalog: React.FC = () => {
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2000&auto=format&fit=crop" 
+            src={siteConfig?.heroImage || "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=2000&auto=format&fit=crop"} 
             alt="Hero background" 
             className="w-full h-full object-cover grayscale opacity-40 scale-110"
           />
@@ -80,7 +87,17 @@ export const Catalog: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-5xl sm:text-7xl md:text-9xl font-black leading-[0.8] tracking-tighter uppercase mb-8"
               >
-                Pre-Loved<br/>Vintage
+                {siteConfig?.heroTitle ? (
+                  siteConfig.heroTitle.includes(' ') ? (
+                    <>
+                      {siteConfig.heroTitle.split(' ').slice(0, -1).join(' ')}
+                      <br/>
+                      {siteConfig.heroTitle.split(' ').slice(-1)}
+                    </>
+                  ) : siteConfig.heroTitle
+                ) : (
+                  <>Pre-Loved<br/>Vintage</>
+                )}
               </motion.h1>
               <motion.p 
                 initial={{ opacity: 0, y: 30 }}
@@ -88,7 +105,7 @@ export const Catalog: React.FC = () => {
                 transition={{ delay: 0.1 }}
                 className="text-neutral-300 text-base md:text-xl font-medium leading-tight max-w-xl"
               >
-                Sustainable style for the digital age. Every piece hand-picked, washed, and ready for a new chapter.
+                {siteConfig?.heroSubtitle || "Sustainable style for the digital age. Every piece hand-picked, washed, and ready for a new chapter."}
               </motion.p>
             </header>
 
@@ -201,10 +218,19 @@ export const Catalog: React.FC = () => {
           <div className="flex-1">
             <span className="text-[10px] font-bold tracking-[0.3em] text-orange-500 uppercase block mb-6">Our Philosophy</span>
             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-8 leading-none">
-              Not Just Gear.<br />It's History.
+              {siteConfig?.storyTitle ? (
+                siteConfig.storyTitle.includes('. ') ? (
+                  <>
+                    {siteConfig.storyTitle.split('. ')[0]}<br />
+                    {siteConfig.storyTitle.split('. ')[1]}
+                  </>
+                ) : siteConfig.storyTitle
+              ) : (
+                <>Not Just Gear.<br />It's History.</>
+              )}
             </h2>
             <p className="text-neutral-400 text-base md:text-lg leading-relaxed mb-8 max-w-xl">
-              KAAM25 was born from a desire to preserve the craftsmanship of the past. We don't just sell clothes; we curate pieces of history that have stood the test of time. 
+              {siteConfig?.storyDescription || "KAAM25 was born from a desire to preserve the craftsmanship of the past. We don't just sell clothes; we curate pieces of history that have stood the test of time."}
             </p>
             <div className="grid grid-cols-2 gap-8 border-t border-white/10 pt-8">
               <div>
@@ -219,7 +245,7 @@ export const Catalog: React.FC = () => {
           </div>
           <div className="flex-1 w-full aspect-[4/5] bg-neutral-900 border border-white/10 overflow-hidden group">
              <img 
-               src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2000&auto=format&fit=crop" 
+               src={siteConfig?.storyImage || "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=2000&auto=format&fit=crop"} 
                alt="Vintage collection" 
                className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 hover:scale-105"
              />

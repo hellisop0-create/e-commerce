@@ -176,5 +176,15 @@ export const orderService = {
       handleFirestoreError(error, OperationType.UPDATE, `${ORDERS_COLLECTION}/${orderId}`);
       throw error;
     }
+  },
+
+  async deleteOrder(orderId: string): Promise<void> {
+    try {
+      const docRef = doc(db, ORDERS_COLLECTION, orderId);
+      await deleteDoc(docRef);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `${ORDERS_COLLECTION}/${orderId}`);
+      throw error;
+    }
   }
 };
