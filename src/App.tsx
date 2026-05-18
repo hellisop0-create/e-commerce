@@ -1,3 +1,20 @@
+// 👇 CLIENT-SIDE PATCH TO SILENCE GOOGLE AI STUDIO WEBSOCKET CONNECTION ERRORS
+if (typeof window !== 'undefined') {
+  const originalError = window.console.error;
+  window.console.error = (...args) => {
+    if (args[0] && typeof args[0] === 'string' && args[0].includes('[vite] failed to connect to websocket')) {
+      return; 
+    }
+    originalError.apply(window, args);
+  };
+
+  window.addEventListener('unhandledrejection', (event) => {
+    if (event.reason && event.reason.message && event.reason.message.includes('WebSocket closed without opened')) {
+      event.preventDefault(); 
+    }
+  });
+}
+
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
@@ -46,9 +63,9 @@ export default function App() {
 
             <Footer />
             <CookieBanner />
-        </div>
-      </BrowserRouter>
-    </CartProvider>
-  </AuthProvider>
+          </div>
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   );
 }
