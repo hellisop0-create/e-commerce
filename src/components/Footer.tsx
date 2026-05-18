@@ -14,7 +14,7 @@ export const Footer: React.FC = () => {
         <div className="col-span-2">
           <div className="flex items-center gap-2 mb-6 group">
             <span className="font-black text-3xl tracking-[-0.1em] uppercase whitespace-nowrap">
-              KAAM<span className="text-orange-500 font-mono italic inline-block -rotate-12 translate-x-1">25</span>
+              ZEE<span className="text-orange-500 font-mono italic inline-block -rotate-6 translate-x-0.5">MARC</span>
             </span>
           </div>
           <p className="text-neutral-500 text-lg font-medium leading-tight max-w-sm">
@@ -78,7 +78,7 @@ export const Footer: React.FC = () => {
 
               <h4 className="font-black uppercase text-xl tracking-tighter mb-2">Support Transmission</h4>
               <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-8 leading-relaxed">
-                Direct line to KAAM25 logistics and support.
+                Direct line to ZEEMARC logistics and support.
               </p>
 
               <form className="space-y-4" onSubmit={(e) => {
@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
       
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-10 border-t border-white/5 gap-6">
         <p className="text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
-          © 2026 KAAM25 SYSTEM. ALL RIGHTS RESERVED.
+          © 2026 ZEEMARC SYSTEM. ALL RIGHTS RESERVED.
         </p>
         <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
           <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>

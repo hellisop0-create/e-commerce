@@ -46,7 +46,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
             animate={{ scale: 1, opacity: 1 }}
             className="w-20 h-20 border-2 border-white flex items-center justify-center relative overflow-hidden"
           >
-            <span className="text-2xl font-black italic tracking-tighter">K25</span>
+            <span className="text-xl font-black italic tracking-tighter">ZMRC</span>
             <motion.div 
               animate={{ 
                 x: ["-100%", "100%"],

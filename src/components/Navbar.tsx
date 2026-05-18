@@ -57,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
         <div className={`flex items-center gap-4 sm:gap-12 ${isSearchExpanded ? 'hidden sm:flex' : 'flex'}`}>
           <Link to="/" className="flex items-center gap-2 group shrink-0">
             <span className="font-black text-2xl tracking-[-0.1em] uppercase whitespace-nowrap">
-              KAAM<span className="text-orange-500 font-mono italic inline-block -rotate-12 translate-x-1">25</span>
+              ZEE<span className="text-orange-500 font-mono italic inline-block -rotate-6 translate-x-0.5">MARC</span>
             </span>
           </Link>
           
@@ -174,7 +174,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
         >
           <div className="flex justify-between items-center mb-12">
             <span className="font-black text-2xl tracking-[-0.1em] uppercase">
-              KAAM<span className="text-orange-500 font-mono italic inline-block -rotate-12 translate-x-1">25</span>
+              ZEE<span className="text-orange-500 font-mono italic inline-block -rotate-6 translate-x-0.5">MARC</span>
             </span>
             <button 
               onClick={() => setIsMobileMenuOpen(false)}
