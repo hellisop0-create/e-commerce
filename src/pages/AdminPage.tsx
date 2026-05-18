@@ -720,7 +720,7 @@ const AdminOrderCard: React.FC<{ order: Order; onRefresh: () => void }> = ({ ord
                         <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Authorized By</div>
                         <div className="flex items-center gap-3">
                            <div className="p-2 bg-white/5 border border-white/10">
-                              <User className="w-4 h-4 text-white/50" />
+                              <User className="w-4 h-4 text-white" />
                            </div>
                            <div>
                               <div className="text-[10px] font-black uppercase">{order.cancellationInfo.name}</div>

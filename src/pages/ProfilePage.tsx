@@ -366,7 +366,7 @@ const ProfilePage: React.FC = () => {
             >
               <button 
                 onClick={() => setCancellingOrder(null)}
-                className="absolute top-6 right-6 p-2 text-neutral-500 hover:text-white/50 transition-colors"
+                className="absolute top-6 right-6 p-2 text-neutral-500 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
