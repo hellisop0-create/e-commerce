@@ -70,7 +70,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
               <motion.span 
                 animate={{ opacity: [1, 0.5, 1] }}
                 transition={{ duration: 0.5, repeat: Infinity }}
-                className="text-[9px] text-white/50 uppercase tracking-widest"
+                className="text-[9px] text-white uppercase tracking-widest"
               >
                 {message}...
               </motion.span>

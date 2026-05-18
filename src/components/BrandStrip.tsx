@@ -35,7 +35,7 @@ export const BrandStrip: React.FC = () => {
             <React.Fragment key={set}>
               <div className="flex items-center gap-12 md:gap-20 lg:gap-32">
                 <span className="text-lg md:text-xl lg:text-3xl font-black tracking-[-0.05em] scale-y-95 text-white hover:text-orange-500 transition-colors cursor-default">BALENCIAGA</span>
-                <span className="text-base md:text-lg lg:text-2xl font-light tracking-[0.25em] text-white/90 hover:text-orange-500 transition-colors cursor-default">RICK OWENS</span>
+                <span className="text-base md:text-lg lg:text-2xl font-light tracking-[0.25em] text-white hover:text-orange-500 transition-colors cursor-default">RICK OWENS</span>
                 <div className="flex flex-col items-center gap-0.5 group/margiela cursor-default">
                   <span className="text-[5px] md:text-[6px] lg:text-[8px] font-mono text-white/30 group-hover/margiela:text-orange-500/50 transition-colors">0 1 2 3 4 5 6 7 8 9</span>
                   <span className="text-xs md:text-sm lg:text-xl font-bold tracking-widest text-white">MAISON MARGIELA</span>

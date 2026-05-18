@@ -17,38 +17,38 @@ export const Footer: React.FC = () => {
               ZEE<span className="text-orange-500 font-mono italic inline-block -rotate-6 translate-x-0.5">MARC</span>
             </span>
           </div>
-          <p className="text-neutral-500 text-lg font-medium leading-tight max-w-sm">
+          <p className=" text-neutral-400 text-lg font-medium leading-tight max-w-sm">
             Sustainable style for the digital age. Authenticated vintage gear hand-picked from across the globe.
           </p>
         </div>
         
         <div>
           <h4 className="font-black uppercase text-[10px] tracking-[0.3em] text-neutral-400 mb-8 underline underline-offset-8 decoration-white/5">Archive</h4>
-          <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+          <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-400">
             {isAdmin && (
               <>
-                <li><Link to="/inventory" className="hover:text-white transition-colors">Inventory</Link></li>
-                <li><Link to="/orders" className="hover:text-white transition-colors">Orders</Link></li>
+                <li><Link to="/inventory" className="text-white hover:text-orange-500 transition-colors">Inventory</Link></li>
+                <li><Link to="/orders" className="text-white hover:text-orange-500 transition-colors">Orders</Link></li>
               </>
             )}
-            <li><Link to="/shipping-returns" className="hover:text-white transition-colors">Shipping & Returns</Link></li>
+            <li><Link to="/shipping-returns" className="text-white hover:text-orange-500 transition-colors">Shipping & Returns</Link></li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-black uppercase text-[10px] tracking-[0.3em] text-neutral-400 mb-8 underline underline-offset-8 decoration-white/5">Connect</h4>
-          <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+          <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest text-neutral-400">
             <li>
               <button 
                 onClick={() => setIsContactModalOpen(true)}
-                className="hover:text-white transition-colors cursor-pointer text-left"
+                className="text-white hover:text-orange-500 transition-colors cursor-pointer text-left"
               >
                 Email Support
               </button>
             </li>
-            <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
-            <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
-            <li><Link to="/" className="hover:text-white transition-colors">Our Story</Link></li>
+            <li><a href="#" className="text-white hover:text-orange-500 transition-colors">Instagram</a></li>
+            <li><a href="#" className="text-white hover:text-orange-500 transition-colors">Twitter</a></li>
+            <li><Link to="/" className="text-white hover:text-orange-500 transition-colors">Our Story</Link></li>
           </ul>
         </div>
       </div>
@@ -77,7 +77,7 @@ export const Footer: React.FC = () => {
               </button>
 
               <h4 className="font-black uppercase text-xl tracking-tighter mb-2">Support Transmission</h4>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-8 leading-relaxed">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white mb-8 leading-relaxed">
                 Direct line to ZEEMARC logistics and support.
               </p>
 
@@ -87,21 +87,21 @@ export const Footer: React.FC = () => {
                 setIsContactModalOpen(false);
               }}>
                 <div className="space-y-1">
-                  <span className="text-[8px] font-mono uppercase text-neutral-600">Verification ID</span>
+                  <span className="text-[8px] font-mono uppercase text-white/40">Verification ID</span>
                   <input 
                     required
                     type="email" 
                     placeholder="YOUR@EMAIL.COM" 
-                    className="w-full bg-white/5 border border-white/10 p-4 text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors"
+                    className="w-full bg-white/5 border border-white/10 p-4 text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors text-white"
                   />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[8px] font-mono uppercase text-neutral-600">Transmission Content</span>
+                  <span className="text-[8px] font-mono uppercase text-white/40">Transmission Content</span>
                   <textarea 
                     required
                     placeholder="ENTER YOUR MESSAGE..." 
                     rows={4}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors resize-none"
+                    className="w-full bg-white/5 border border-white/10 p-4 text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-orange-500 transition-colors resize-none text-white"
                   />
                 </div>
                 <button 
@@ -117,10 +117,10 @@ export const Footer: React.FC = () => {
       </AnimatePresence>
       
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between pt-10 border-t border-white/5 gap-6">
-        <p className="text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
+        <p className="text-[9px] font-mono uppercase font-bold tracking-widest text-white">
           © 2026 ZEEMARC SYSTEM. ALL RIGHTS RESERVED.
         </p>
-        <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-neutral-600">
+        <div className="flex items-center gap-8 text-[9px] font-mono uppercase font-bold tracking-widest text-white">
           <Link to="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
           <button 
             onClick={() => {

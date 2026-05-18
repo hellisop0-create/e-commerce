@@ -95,7 +95,7 @@ const OrdersPage: React.FC = () => {
                         </div>
                         <div className="space-y-1">
                           <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Date</span>
-                          <div className="flex items-center gap-2 text-xs font-bold text-white/80">
+                          <div className="flex items-center gap-2 text-xs font-bold text-white">
                             <Calendar className="w-3 h-3 text-orange-500" />
                             {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'Recent'}
                           </div>

@@ -58,7 +58,7 @@ export const LoginPage = () => {
             Security Layer
           </span>
           <h1 className="text-5xl font-black tracking-tighter uppercase mb-4 leading-none">
-            {isSignUp ? 'CREATE ACCOUNT' : 'ACCESS CORE'}
+            {isSignUp ? 'CREATE ACCOUNT' : 'ACCOUNT LOGIN'}
           </h1>
           <p className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest">
             {isSignUp ? 'Initialize your credentials' : 'Authorized Personnel Only'}
@@ -122,7 +122,7 @@ export const LoginPage = () => {
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-[10px] font-black uppercase tracking-widest text-neutral-500 hover:text-orange-500 transition-colors cursor-pointer"
           >
-            {isSignUp ? 'Already have an account? Sign In' : 'No credentials? Initialize / Sign Up'}
+            {isSignUp ? 'Already have an account? Sign In' : 'Dont have an account yet? Sign Up'}
           </button>
         </div>
 

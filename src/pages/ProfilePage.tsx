@@ -329,11 +329,11 @@ const ProfilePage: React.FC = () => {
                         </div>
                         <div className="flex justify-between items-center py-4 border-b border-white/5">
                            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">System Email</span>
-                           <span className="text-sm font-bold text-white/50">{user?.email}</span>
+                           <span className="text-sm font-bold text-white">{user?.email}</span>
                         </div>
                         <div className="flex justify-between items-center py-4 border-b border-white/5">
                            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Joined Archive</span>
-                           <span className="text-sm font-bold text-white/50">
+                           <span className="text-sm font-bold text-white">
                              {user?.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString() : 'Initial Era'}
                            </span>
                         </div>
@@ -366,7 +366,7 @@ const ProfilePage: React.FC = () => {
             >
               <button 
                 onClick={() => setCancellingOrder(null)}
-                className="absolute top-6 right-6 p-2 text-neutral-500 hover:text-white transition-colors"
+                className="absolute top-6 right-6 p-2 text-neutral-500 hover:text-white/50 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
