@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
                 <li><Link to="/orders" className="text-white hover:text-orange-500 transition-colors">Orders</Link></li>
               </>
             )}
-            <li><Link to="/shipping-returns" className="text-white hover:text-orange-500 transition-colors">Shipping & Returns</Link></li>
+            <li><Link to="/shipping-returns" className="text-white/45 hover:text-orange-500 transition-colors">Shipping & Returns</Link></li>
           </ul>
         </div>
 
@@ -41,14 +41,14 @@ export const Footer: React.FC = () => {
             <li>
               <button 
                 onClick={() => setIsContactModalOpen(true)}
-                className="text-white hover:text-orange-500 transition-colors cursor-pointer text-left"
+                className="text-white/45 hover:text-orange-500 transition-colors cursor-pointer text-left"
               >
                 Email Support
               </button>
             </li>
-            <li><a href="#" className="text-white hover:text-orange-500 transition-colors">Instagram</a></li>
-            <li><a href="#" className="text-white hover:text-orange-500 transition-colors">Twitter</a></li>
-            <li><Link to="/" className="text-white hover:text-orange-500 transition-colors">Our Story</Link></li>
+            <li><a href="#" className="text-white/45 hover:text-orange-500 transition-colors">Instagram</a></li>
+            <li><a href="#" className="text-white/45 hover:text-orange-500 transition-colors">Twitter</a></li>
+            <li><Link to="/" className="text-white/45 hover:text-orange-500 transition-colors">Our Story</Link></li>
           </ul>
         </div>
       </div>
