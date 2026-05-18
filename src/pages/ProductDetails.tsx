@@ -9,6 +9,7 @@ import { reviewService } from '../services/reviewService';
 import { PRODUCT_SIZES } from '../constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Plus, ShoppingBag, Info, Star, ChevronRight, X, Loader2, MessageSquare } from 'lucide-react';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -106,11 +107,7 @@ export const ProductDetailPage: React.FC = () => {
     }
   };
 
-  if (loading) return (
-    <div className="min-h-screen bg-black flex items-center justify-center font-mono text-white text-[10px] uppercase tracking-[0.5em]">
-      Loading Data...
-    </div>
-  );
+  if (loading) return <LoadingScreen message="Retrieving Archival Data" />;
 
   if (!product) return <div className="bg-black min-h-screen text-white p-20 uppercase font-black">Item Not Found</div>;
 

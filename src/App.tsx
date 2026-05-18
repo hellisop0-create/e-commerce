@@ -17,13 +17,14 @@ if (typeof window !== 'undefined') {
 
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Cart } from './components/Cart';
 import { CookieBanner } from './components/CookieBanner';
 import { CartProvider } from './context/CartContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { Catalog } from './pages/Catalog';
 import { ProductDetailPage } from './pages/ProductDetails';
 import { LoginPage } from './pages/LoginPage';
@@ -34,38 +35,54 @@ import SearchPage from './pages/SearchPage';
 import ShippingReturns from './pages/ShippingReturns';
 import CookiePolicy from './pages/CookiePolicy';
 import ProfilePage from './pages/ProfilePage';
+import { LoadingScreen } from './components/LoadingScreen';
 
 export default function App() {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { loading } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <div className="min-h-screen bg-[#0A0A0A] text-white font-sans selection:bg-orange-500 selection:text-white">
-            <Navbar onCartToggle={() => setIsCartOpen(true)} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-            <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+    <BrowserRouter>
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div key="splash" exit={{ opacity: 0, transition: { duration: 0.3 } }}>
+             <LoadingScreen message="Syncing with Archive" />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
-            <Routes>
-              <Route path="/" element={<Catalog />} />
-              <Route path="/product/:id" element={<ProductDetailPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/inventory" element={<AdminPage />} />
-              <Route path="/orders" element={<OrdersPage />} />
-              <Route path="/shipping-returns" element={<ShippingReturns />} />
-              <Route path="/cookie-policy" element={<CookiePolicy />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/search" element={<SearchPage />} />
-            </Routes>
+      <ScrollToTop />
+      <div className="min-h-screen bg-[#0A0A0A] text-white font-sans selection:bg-orange-500 selection:text-white">
+        <Navbar onCartToggle={() => setIsCartOpen(true)} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-            <Footer />
-            <CookieBanner />
-          </div>
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+        <Routes>
+          <Route path="/" element={<Catalog />} />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/inventory" element={<AdminPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/shipping-returns" element={<ShippingReturns />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/search" element={<SearchPage />} />
+        </Routes>
+
+        <Footer />
+        <CookieBanner />
+      </div>
+    </BrowserRouter>
   );
 }

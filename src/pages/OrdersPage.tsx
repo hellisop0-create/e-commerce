@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { Loader2, Package, Calendar, User, CreditCard, ChevronRight, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 const OrdersPage: React.FC = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -49,12 +50,7 @@ const OrdersPage: React.FC = () => {
   };
 
   if (loading || (!isAdmin && !loading)) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-8 gap-4">
-        <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-500">Accessing Secure Archive...</p>
-      </div>
-    );
+    return <LoadingScreen message="Accessing Secure Archive" />;
   }
 
   return (

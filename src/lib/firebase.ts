@@ -9,7 +9,7 @@ const app = initializeApp(firebaseConfig);
 // Connect to the specific database ID specified in the configuration
 export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
-  cache: persistentLocalCache({
+  localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
   })
 }, firebaseConfig.firestoreDatabaseId || "(default)");

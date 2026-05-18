@@ -10,6 +10,7 @@ import { PRODUCT_CATEGORIES, PRODUCT_SIZES } from '../constants';
 import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { orderService } from '../services/productService';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 export const AdminPage = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -119,12 +120,7 @@ export const AdminPage = () => {
   };
 
   if (loading || (!isAdmin && !loading)) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-8 gap-4">
-        <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-        <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-neutral-500">Verifying Security Protocols...</p>
-      </div>
-    );
+    return <LoadingScreen message="Verifying Security Protocols" />;
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

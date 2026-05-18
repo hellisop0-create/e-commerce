@@ -21,6 +21,7 @@ import {
   X
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 const ProfilePage: React.FC = () => {
   const { user, signOut, updateProfile, loading: authLoading } = useAuth();
@@ -107,12 +108,7 @@ const ProfilePage: React.FC = () => {
   };
 
   if (authLoading || (!user && authLoading)) {
-    return (
-      <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center p-8 gap-4">
-        <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-500">Syncing Profile Data...</span>
-      </div>
-    );
+    return <LoadingScreen message="Syncing Profile Data" />;
   }
 
   const pendingOrders = orders.filter(o => o.status === 'pending');

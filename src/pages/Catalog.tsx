@@ -7,6 +7,7 @@ import { PRODUCT_CATEGORIES } from '../constants';
 import { siteConfigService, SiteConfig } from '../services/siteConfigService';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, ArrowRight, Grid3X3, ListFilter, SlidersHorizontal, Loader2 } from 'lucide-react';
+import { BrandStrip } from '../components/BrandStrip';
 
 export const Catalog: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -145,6 +146,8 @@ export const Catalog: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <BrandStrip />
 
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex flex-col lg:flex-row gap-8 md:gap-12" id="drops">
