@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { productService } from '../services/productService';
 import { reviewService } from '../services/reviewService';
-import { Product, Review } from '../types';
+import { Product, Review, Order } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Package, Trash2, ArrowLeft, Loader2, CheckCircle2, Image as ImageIcon, ShieldAlert, Star, MessageSquare } from 'lucide-react';
+import { Plus, Package, Trash2, ArrowLeft, Loader2, CheckCircle2, Image as ImageIcon, ShieldAlert, Star, MessageSquare, ShoppingCart, Clock, AlertCircle, MapPin, CreditCard, ChevronDown, ChevronUp, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { PRODUCT_CATEGORIES, PRODUCT_SIZES } from '../constants';
 import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { orderService } from '../services/productService';
 
 export const AdminPage = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -21,7 +22,9 @@ export const AdminPage = () => {
 
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [allReviews, setAllReviews] = useState<Review[]>([]);
-  const [activeTab, setActiveTab] = useState<'inventory' | 'reviews'>('inventory');
+  const [allOrders, setAllOrders] = useState<Order[]>([]);
+  const [activeTab, setActiveTab] = useState<'inventory' | 'reviews' | 'orders'>('inventory');
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false);
 
   // Moved to the top level to adhere strictly to the Rules of Hooks
   const [formData, setFormData] = useState<Omit<Product, 'id'>>({
@@ -50,8 +53,27 @@ export const AdminPage = () => {
     } else if (isAdmin) {
       fetchProducts();
       fetchReviews();
+      fetchOrders();
     }
   }, [user, loading, isAdmin, navigate]);
+
+  const fetchOrders = async () => {
+    setIsLoadingOrders(true);
+    try {
+      const data = await orderService.getAllOrders();
+      // Sort by date descending
+      const sorted = data.sort((a, b) => {
+        const dateA = a.createdAt?.seconds || 0;
+        const dateB = b.createdAt?.seconds || 0;
+        return dateB - dateA;
+      });
+      setAllOrders(sorted);
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
 
   const fetchReviews = async () => {
     try {
@@ -270,13 +292,35 @@ export const AdminPage = () => {
             </p>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             <button
-              onClick={() => setActiveTab(activeTab === 'inventory' ? 'reviews' : 'inventory')}
-              className="border border-white/10 text-white px-8 py-4 font-black uppercase text-xs tracking-[0.3em] hover:bg-white/5 transition-all flex items-center gap-3"
+              onClick={() => setActiveTab('orders')}
+              className={`px-8 py-4 font-black uppercase text-xs tracking-[0.3em] transition-all flex items-center gap-3 border ${
+                activeTab === 'orders' ? 'bg-white text-black border-white' : 'border-white/10 text-white hover:bg-white/5'
+              }`}
             >
-              {activeTab === 'inventory' ? <MessageSquare className="w-4 h-4" /> : <Package className="w-4 h-4" />}
-              {activeTab === 'inventory' ? 'View Reviews' : 'View Inventory'}
+              <ShoppingCart className="w-4 h-4" />
+              Orders
+            </button>
+
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`px-8 py-4 font-black uppercase text-xs tracking-[0.3em] transition-all flex items-center gap-3 border ${
+                activeTab === 'reviews' ? 'bg-white text-black border-white' : 'border-white/10 text-white hover:bg-white/5'
+              }`}
+            >
+              <MessageSquare className="w-4 h-4" />
+              Reviews
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('inventory')}
+              className={`px-8 py-4 font-black uppercase text-xs tracking-[0.3em] transition-all flex items-center gap-3 border ${
+                activeTab === 'inventory' && !isAdding ? 'bg-white text-black border-white' : 'border-white/10 text-white hover:bg-white/5'
+              }`}
+            >
+              <Package className="w-4 h-4" />
+              Inventory
             </button>
             
             {activeTab === 'inventory' && (
@@ -298,7 +342,33 @@ export const AdminPage = () => {
         </div>
 
         <AnimatePresence mode="wait">
-          {activeTab === 'reviews' ? (
+          {activeTab === 'orders' ? (
+            <motion.div
+              key="orders-section"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6"
+            >
+              {isLoadingOrders ? (
+                <div className="py-32 flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-500">Retrieving Transaction Streams...</span>
+                </div>
+              ) : allOrders.length === 0 ? (
+                <div className="py-32 bg-[#111111] border border-white/10 flex flex-col items-center justify-center text-center">
+                  <ShoppingCart className="w-12 h-12 text-neutral-800 mb-6" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-600">Zero transaction activity detected.</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {allOrders.map(order => (
+                    <AdminOrderCard key={order.id} order={order} onRefresh={fetchOrders} />
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          ) : activeTab === 'reviews' ? (
             <motion.div
               key="reviews-list"
               initial={{ opacity: 0 }}
@@ -571,6 +641,187 @@ export const AdminPage = () => {
           )}
         </AnimatePresence>
       </div>
+    </div>
+  );
+};
+
+const AdminOrderCard: React.FC<{ order: Order; onRefresh: () => void }> = ({ order, onRefresh }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdateStatus = async (newStatus: 'pending' | 'completed' | 'cancelled') => {
+    setIsUpdating(true);
+    try {
+      await orderService.updateOrderStatus(order.id, newStatus);
+      onRefresh();
+    } catch (error) {
+      console.error('Status update failed:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const statusStyles = {
+    pending: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    completed: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    cancelled: 'text-red-500 bg-red-500/10 border-red-500/20'
+  };
+
+  return (
+    <div className="bg-[#111111] border border-white/10 overflow-hidden hover:border-white/20 transition-all">
+      <div 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="p-6 cursor-pointer flex flex-wrap items-center justify-between gap-6"
+      >
+        <div className="flex items-center gap-6">
+          <div className="w-12 h-12 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+             <Package className="w-6 h-6 text-neutral-600" />
+          </div>
+          <div>
+            <div className="text-[9px] font-bold text-neutral-500 uppercase tracking-[0.2em] mb-1">REFERENCE: #{order.id.substring(0, 8)}</div>
+            <div className="flex items-center gap-3">
+               <span className="text-lg font-black uppercase tracking-tight leading-none">Rs. {order.total.toLocaleString()}</span>
+               <div className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase border ${statusStyles[order.status]}`}>
+                  {order.status}
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-8">
+           <div className="hidden sm:block text-right">
+             <div className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-1">COLLECTOR</div>
+             <div className="text-[10px] font-black uppercase truncate max-w-[150px]">{order.shippingInfo.fullName}</div>
+           </div>
+           <div className="hidden sm:block text-right">
+             <div className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest mb-1">ACQUISITION DATE</div>
+             <div className="text-[10px] font-black uppercase">{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString() : 'Recent'}</div>
+           </div>
+           <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
+             <ChevronDown className="w-4 h-4 text-neutral-400" />
+           </motion.div>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            className="border-t border-white/5"
+          >
+            <div className="p-8 bg-black/40 space-y-12">
+               {/* Cancellation Alert */}
+               {order.status === 'cancelled' && order.cancellationInfo && (
+                 <div className="p-6 bg-red-500/5 border border-red-500/10">
+                   <div className="flex items-center gap-3 mb-6">
+                      <AlertCircle className="w-5 h-5 text-red-500" />
+                      <span className="text-[10px] font-black uppercase text-red-500 tracking-[0.4em]">NEUTRALIZATION PROTOCOL DETECTED</span>
+                   </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-4">
+                        <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Authorized By</div>
+                        <div className="flex items-center gap-3">
+                           <div className="p-2 bg-white/5 border border-white/10">
+                              <User className="w-4 h-4 text-white" />
+                           </div>
+                           <div>
+                              <div className="text-[10px] font-black uppercase">{order.cancellationInfo.name}</div>
+                              <div className="text-[9px] text-neutral-600 uppercase font-mono">{order.cancellationInfo.email} | {order.cancellationInfo.phone}</div>
+                           </div>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Termination Justification</div>
+                        <div className="p-4 bg-white/5 border border-white/5 text-[11px] font-medium text-neutral-400 italic">
+                          "{order.cancellationInfo.reason}"
+                        </div>
+                      </div>
+                   </div>
+                 </div>
+               )}
+
+               <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                  {/* Items */}
+                  <div className="lg:col-span-1">
+                    <span className="text-[9px] font-black uppercase text-orange-500 tracking-[0.3em] block mb-6">Archival Package</span>
+                    <div className="space-y-4">
+                      {order.items.map((item, idx) => (
+                        <div key={idx} className="flex gap-4 items-center group">
+                            <div className="w-14 h-14 bg-[#111111] border border-white/10 shrink-0 overflow-hidden grayscale group-hover:grayscale-0 transition-all">
+                              <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-[10px] font-black uppercase truncate group-hover:text-orange-500 transition-colors">{item.product.name}</div>
+                              <div className="text-[9px] font-bold text-neutral-500 mt-1 uppercase">QTY: {item.quantity} / SIZE: {item.selectedSize || 'OS'}</div>
+                            </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Shipping & Payment */}
+                  <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-[9px] font-bold text-neutral-500 uppercase tracking-widest">
+                          <MapPin className="w-3 h-3" /> TRANSMISSION DATA
+                        </div>
+                        <div className="bg-white/5 p-4 space-y-2 border border-white/5">
+                            <div className="text-[10px] font-black uppercase">{order.shippingInfo.fullName}</div>
+                            <div className="text-[9px] text-neutral-500 uppercase leading-relaxed font-mono">
+                              {order.shippingInfo.address}, <br/> {order.shippingInfo.city}, {order.shippingInfo.postalCode}
+                            </div>
+                            <div className="text-[9px] text-orange-500/50 font-bold">{order.shippingInfo.phone}</div>
+                        </div>
+                     </div>
+
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-[9px] font-bold text-neutral-500 uppercase tracking-widest">
+                          <CreditCard className="w-3 h-3" /> TRANSACTION PROTOCOL
+                        </div>
+                        <div className="bg-white/5 p-4 border border-white/5 space-y-3">
+                            <div className="flex justify-between items-center">
+                               <span className="text-[9px] text-neutral-500 uppercase font-mono">Method</span>
+                               <span className="text-[10px] font-black uppercase">{order.paymentMethod}</span>
+                            </div>
+                            <div className="flex justify-between items-center pt-2 border-t border-white/5">
+                               <span className="text-[9px] text-neutral-500 uppercase font-mono">Final Value</span>
+                               <span className="text-sm font-black tracking-tighter">Rs. {order.total.toLocaleString()}</span>
+                            </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Admin Actions */}
+               <div className="pt-8 border-t border-white/5 flex flex-wrap items-center justify-between gap-6">
+                   <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-neutral-500">Update Status:</span>
+                      <div className="flex p-1 bg-white/5 border border-white/10 rounded-full">
+                         {['pending', 'completed', 'cancelled'].map((s) => (
+                           <button
+                             key={s}
+                             disabled={isUpdating}
+                             onClick={() => handleUpdateStatus(s as any)}
+                             className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] transition-all ${
+                               order.status === s 
+                                ? 'bg-white text-black' 
+                                : 'text-neutral-500 hover:text-white'
+                             }`}
+                           >
+                             {s}
+                           </button>
+                         ))}
+                      </div>
+                   </div>
+                   
+                   {isUpdating && <Loader2 className="w-4 h-4 text-orange-500 animate-spin" />}
+               </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

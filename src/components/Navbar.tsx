@@ -114,17 +114,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
           
           {user ? (
             <div className={`hidden lg:flex items-center gap-2 sm:gap-4 ${isSearchExpanded ? 'hidden sm:flex' : 'flex'}`}>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full border border-white/10 overflow-hidden hidden sm:block">
-                  <img 
-                    src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
-                    alt="Profile" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+              <div className="flex items-center gap-4">
+                <Link to="/profile" className="flex items-center gap-3 group transition-all">
+                  <div className="w-8 h-8 rounded-full border border-white/10 overflow-hidden hidden sm:block group-hover:border-orange-500 transition-colors">
+                    <img 
+                      src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 group-hover:text-white transition-colors border-b border-transparent group-hover:border-orange-500/50 pb-0.5">
+                    Account
+                  </span>
+                </Link>
                 <button 
                   onClick={() => signOut()}
-                  className="p-2 hover:bg-red-500/10 rounded-full transition-colors group"
+                  className="p-2 hover:bg-white/5 rounded-full transition-colors group"
                   title="Sign Out"
                 >
                   <LogOut className="w-4 h-4 text-neutral-500 group-hover:text-red-500 transition-colors" />
@@ -214,17 +219,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
             <div className="mt-8 pt-8 border-t border-white/10">
               {user ? (
                  <div className="space-y-6">
-                   <div className="flex items-center gap-3">
+                   <Link 
+                     to="/profile"
+                     onClick={() => setIsMobileMenuOpen(false)}
+                     className="flex items-center gap-3 group"
+                   >
                      <img 
                        src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
                        alt="Profile" 
-                       className="w-12 h-12 rounded-full border border-white/10"
+                       className="w-12 h-12 rounded-full border border-white/10 group-hover:border-orange-500 transition-colors"
                      />
                      <div>
-                       <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.2em]">Logged in as</div>
-                       <div className="text-lg font-black uppercase tracking-tight">{user.displayName || 'Collector'}</div>
+                       <div className="text-[10px] font-bold text-neutral-500 uppercase tracking-[0.2em]">Collector</div>
+                       <div className="text-lg font-black uppercase tracking-tight group-hover:text-orange-500 transition-colors">{user.displayName || 'Control Center'}</div>
                      </div>
-                   </div>
+                   </Link>
                    <button 
                      onClick={() => {
                        signOut();
@@ -232,7 +241,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onCartToggle, searchQuery, onSea
                      }} 
                      className="flex items-center gap-2 text-xs font-black uppercase text-red-500 tracking-widest hover:translate-x-2 transition-transform"
                    >
-                     <LogOut className="w-4 h-4" /> Sign Out from System
+                     <LogOut className="w-4 h-4" /> Sign Out
                    </button>
                  </div>
               ) : (

@@ -20,6 +20,7 @@ interface AuthContextType {
   signUpWithEmail: (email: string, pass: string) => Promise<void>;
   signInWithEmail: (email: string, pass: string) => Promise<void>;
   signOut: () => Promise<void>;
+  updateProfile: (data: { displayName?: string; photoURL?: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -85,8 +86,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await firebaseSignOut(auth);
   };
 
+  const updateProfile = async (data: { displayName?: string; photoURL?: string }) => {
+    if (!user) return;
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, {
+        ...data,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+      
+      // We also update the local state if needed, but onAuthStateChanged might not trigger for firestore updates
+      // Usually we might want to refresh the user or just rely on firestore as source of truth if we use a separate hook
+      // For now, let's just trigger a local state update by re-fetching if possible or manually updating
+      setUser(prev => prev ? { ...prev, ...data } as any : null);
+    } catch (error) {
+      console.error("Update Profile Error:", error);
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, signOut }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, signInWithGoogle, signUpWithEmail, signInWithEmail, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

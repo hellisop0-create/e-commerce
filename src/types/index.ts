@@ -42,6 +42,14 @@ export interface ShippingInfo {
   phone: string;
 }
 
+export interface OrderCancellation {
+  name: string;
+  phone: string;
+  email: string;
+  reason: string;
+  createdAt: any;
+}
+
 export interface Order {
   id: string;
   userId: string;
@@ -50,6 +58,7 @@ export interface Order {
   status: 'pending' | 'completed' | 'cancelled';
   paymentMethod: 'Easypaisa' | 'JazzCash' | 'COD' | 'Wallet'; // Added payment types
   shippingInfo: ShippingInfo;
+  cancellationInfo?: OrderCancellation;
   createdAt: any;
   updatedAt: any;
 }

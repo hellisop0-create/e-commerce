@@ -183,6 +183,23 @@ export const orderService = {
     }
   },
 
+  async cancelOrder(orderId: string, cancellationData: { name: string; phone: string; email: string; reason: string }): Promise<void> {
+    try {
+      const docRef = doc(db, ORDERS_COLLECTION, orderId);
+      await setDoc(docRef, { 
+        status: 'cancelled', 
+        cancellationInfo: {
+          ...cancellationData,
+          createdAt: serverTimestamp()
+        },
+        updatedAt: serverTimestamp() 
+      }, { merge: true });
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `${ORDERS_COLLECTION}/${orderId}`);
+      throw error;
+    }
+  },
+
   async deleteOrder(orderId: string): Promise<void> {
     try {
       const docRef = doc(db, ORDERS_COLLECTION, orderId);
